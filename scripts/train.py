@@ -6,8 +6,10 @@ import tensorboardX
 import sys
 
 import utils
+from kg.masker import KGActionMasker
 from utils import device
 from model import ACModel
+import minigrid
 
 
 # Parse arguments
@@ -125,6 +127,21 @@ if __name__ == "__main__":
     txt_logger.info("Model loaded\n")
     txt_logger.info("{}\n".format(acmodel))
 
+    # Setup action masking
+
+    with open("kg/data/recommendation_query.rq", "r") as f:
+        query = f.read()
+
+    masker = KGActionMasker(
+        ontology_file="kg/data/minigrid_ontology.ttl",
+        recommendation_file="kg/data/minigrid_recommendations.ttl",
+        query=query,
+        domain_uri="http://example.org/minigrid#",
+        env_problem_type="crossing",
+        action_size=envs[0].action_space.n,
+    )
+
+
     # Load algo
 
     if args.algo == "a2c":
@@ -134,7 +151,11 @@ if __name__ == "__main__":
     elif args.algo == "ppo":
         algo = torch_ac.PPOAlgo(envs, acmodel, device, args.frames_per_proc, args.discount, args.lr, args.gae_lambda,
                                 args.entropy_coef, args.value_loss_coef, args.max_grad_norm, args.recurrence,
-                                args.optim_eps, args.clip_eps, args.epochs, args.batch_size, preprocess_obss)
+                                args.optim_eps, args.clip_eps, args.epochs, args.batch_size,
+                                # preprocess_obss=utils.kg.test_preobs,
+                                # reshape_reward=utils.kg.test_reshape)
+                                preprocess_obss=preprocess_obss,
+                                mask_actions=masker.get_action_mask)
     else:
         raise ValueError("Incorrect algorithm name: {}".format(args.algo))
 

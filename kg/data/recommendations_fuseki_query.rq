@@ -1,0 +1,59 @@
+PREFIX : <http://example.org/minigrid#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?rec ?maskWeight ?maskedActionIndex
+WHERE {
+  BIND("MAP_ID_REPLACE" AS ?targetMapId)
+
+  GRAPH <MAP_GRAPH_REPLACE> {
+    ?map a :Map ;
+         :mapId ?targetMapId .
+  }
+
+  GRAPH <RECOMMENDATIONS_GRAPH_REPLACE> {
+    ?rec a :Recommendation ;
+         :hasMask ?mask .
+
+    ?mask :masksAction ?maskedAction ;
+          :maskWeight ?maskWeight .
+
+    ?maskedAction :actionIndex ?maskedActionIndex .
+  }
+
+  OPTIONAL {
+  GRAPH <RECOMMENDATIONS_GRAPH_REPLACE> {
+      ?rec :hasRequirement ?req .
+      ?req :requiresCellType ?reqCellType ;
+           :positionX ?reqX ;
+           :positionY ?reqY .
+
+      ?reqCellType :channelValue ?reqChannelValue .
+    }
+  }
+  
+  OPTIONAL {
+    FILTER(BOUND(?reqChannelValue))
+
+  	GRAPH <MAP_GRAPH_REPLACE> {
+      ?map :hasCell ?cell .
+      ?cell :coordinateX ?cellX ;
+            :coordinateY ?cellY ;
+            :channelValue ?cellValue .
+    }
+
+    FILTER(
+      ?reqX = ?cellX &&
+      ?reqY = ?cellY &&
+      ?reqChannelValue = ?cellValue
+    )
+
+    GRAPH <RECOMMENDATIONS_GRAPH_REPLACE> {
+      ?req a :Requirement .
+    }
+    
+    BIND(?req AS ?satisfiedReq)
+  }
+}
+GROUP BY ?rec ?maskWeight ?maskedActionIndex
+HAVING (COUNT(DISTINCT ?req) = COUNT(DISTINCT ?satisfiedReq))

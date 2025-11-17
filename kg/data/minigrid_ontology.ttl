@@ -1,0 +1,227 @@
+@prefix : <http://example.org/minigrid#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ========================================
+# Ontology Metadata
+# ========================================
+
+<http://example.org/minigrid> a owl:Ontology ;
+    rdfs:label "Minigrid Recommendations Ontology" ;
+    rdfs:comment "An ontology for modeling recommendations, masks, requirements, maps, and cells in minigrid environments." .
+
+# ========================================
+# Classes
+# ========================================
+
+:Recommendation a owl:Class ;
+    rdfs:label "Recommendation" ;
+    rdfs:comment "Represents a general behavioral recommendation in a minigrid environment.." .
+
+:Mask a owl:Class ;
+    rdfs:label "Mask" ;
+    rdfs:comment "Represents an action mask associated with a Recommendation. Masks denote which actions should be masked with a weight value between 0 and 1." .
+
+:Requirement a owl:Class ;
+    rdfs:label "Requirement" ;
+    rdfs:comment "Represents a condition that must be satisfied for a recommendation to apply. Requirements specify cell positions and their expected values." .
+
+:Map a owl:Class ;
+    rdfs:label "Map" ;
+    rdfs:comment "Represents a single minigrid map instance. Each map has a unique identifier and consists of cells arranged in a grid structure." .
+
+:Cell a owl:Class ;
+    rdfs:label "Cell" ;
+    rdfs:comment "Represents an individual cell within a map. Each cell has X and Y coordinates and a channel value." .
+
+:Action a owl:Class ;
+    rdfs:label "Action" ;
+    rdfs:comment "Represents an action that can be taken in the minigrid environment." .
+
+:CellType a owl:Class ;
+    rdfs:label "Cell Type" ;
+    rdfs:comment "Represents the type of a cell in the minigrid environment." .
+
+:ProblemType a owl:Class ;
+    rdfs:label "Problem Type" ;
+    rdfs:comment "Represents the type of problem being addressed in the minigrid environment." .
+
+# ========================================
+# Object Properties
+# ========================================
+
+:hasMask a owl:ObjectProperty ;
+    rdfs:label "has mask" ;
+    rdfs:domain :Recommendation ;
+    rdfs:range :Mask ;
+    rdfs:comment "Links a recommendation to its associated masks. A recommendation can have multiple masks." .
+
+:hasRequirement a owl:ObjectProperty ;
+    rdfs:label "has requirement" ;
+    rdfs:domain :Recommendation ;
+    rdfs:range :Requirement ;
+    rdfs:comment "Links a recommendation to its requirements. A recommendation can have multiple requirements that must be satisfied." .
+
+:requiresCellType a owl:ObjectProperty ;
+    rdfs:label "requires cell type" ;
+    rdfs:domain :Requirement ;
+    rdfs:range :CellType ;
+    rdfs:comment "Links a requirement to the cell type it pertains to." .
+
+:hasCell a owl:ObjectProperty ;
+    rdfs:label "has cell" ;
+    rdfs:domain :Map ;
+    rdfs:range :Cell ;
+    rdfs:comment "Links a map to its constituent cells." .
+
+:masksAction a owl:ObjectProperty ;
+    rdfs:label "masks action" ;
+    rdfs:domain :Mask ;
+    rdfs:range :Action ;
+    rdfs:comment "Links a mask to the action it is intended to mask." .
+
+:hasProblemType a owl:ObjectProperty ;
+    rdfs:label "applies to problem type" ;
+    rdfs:domain [ a owl:Class ;
+        owl:unionOf ( :Recommendation :Map )
+    ] ;
+    rdfs:range :ProblemType ;
+    rdfs:comment "Links a recommendation or a map to the problem type it is associated with." .
+
+# ========================================
+# Data Properties
+# ========================================
+
+# Recommendation Properties
+:recommendationId a owl:DatatypeProperty ;
+    rdfs:label "recommendation ID" ;
+    rdfs:domain :Recommendation ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Unique identifier for a recommendation." .
+
+:recommendationName a owl:DatatypeProperty ;
+    rdfs:label "recommendation name" ;
+    rdfs:domain :Recommendation ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Human-readable name for a recommendation." .
+
+:recommendationDescription a owl:DatatypeProperty ;
+    rdfs:label "recommendation description" ;
+    rdfs:domain :Recommendation ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Detailed description of the recommendation's behavior." .
+
+# Mask Properties
+:maskDescription a owl:DatatypeProperty ;
+    rdfs:label "mask description" ;
+    rdfs:domain :Mask ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Description of the mask's purpose." .
+
+:maskWeight a owl:DatatypeProperty ;
+    rdfs:label "mask weight" ;
+    rdfs:domain :Mask ;
+    rdfs:range xsd:decimal ;
+    rdfs:comment "Weight value for the mask, ranging from 0 to 1." .
+
+# Requirement Properties
+:positionX a owl:DatatypeProperty ;
+    rdfs:label "position X" ;
+    rdfs:domain :Requirement ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "X coordinate of the cell position in the requirement." .
+
+:positionY a owl:DatatypeProperty ;
+    rdfs:label "position Y" ;
+    rdfs:domain :Requirement ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "Y coordinate of the cell position in the requirement." .
+
+# Map Properties
+:mapId a owl:DatatypeProperty ;
+    rdfs:label "map ID" ;
+    rdfs:domain :Map ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Unique identifier for a map instance." .
+
+# Cell Properties
+:coordinateX a owl:DatatypeProperty ;
+    rdfs:label "coordinate X" ;
+    rdfs:domain :Cell ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "X coordinate of the cell in the map grid." .
+
+:coordinateY a owl:DatatypeProperty ;
+    rdfs:label "coordinate Y" ;
+    rdfs:domain :Cell ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "Y coordinate of the cell in the map grid." .
+
+:channelValue a owl:DatatypeProperty ;
+    rdfs:label "cell has value" ;
+    rdfs:domain [ a owl:Class ;
+        owl:unionOf ( :Cell :CellType )
+    ] ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Links a cell or cell type to its channel value. Channel value is represented as a string of individual channels separated by commas." .
+
+# Problem Type Properties
+:problemTypeName a owl:DatatypeProperty ;
+    rdfs:label "problem type name" ;
+    rdfs:domain :ProblemType ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Name of the problem type." .
+
+:problemTypeDescription a owl:DatatypeProperty ;
+    rdfs:label "problem type description" ;
+    rdfs:domain :ProblemType ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Description of the problem type." .
+
+:problemTypeDocumentationLink a owl:DatatypeProperty ;
+    rdfs:label "problem type documentation link" ;
+    rdfs:domain :ProblemType ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Link to documentation for the problem type." .
+
+# Action Properties
+:actionName a owl:DatatypeProperty ;
+    rdfs:label "action name" ;
+    rdfs:domain :Action ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Name of the action." .
+
+:actionIndex a owl:DatatypeProperty ;
+    rdfs:label "action index" ;
+    rdfs:domain :Action ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "Index of the action in the action space." .
+
+# Cell Type Properties
+:cellTypeName a owl:DatatypeProperty ;
+    rdfs:label "cell type name" ;
+    rdfs:domain :CellType ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Name of the cell type." .
+
+# ========================================
+# Constraints
+# ========================================
+
+:maskWeight a owl:FunctionalProperty ;
+    rdfs:comment "Each mask has exactly one weight value." .
+
+:Mask rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty :maskWeight ;
+    owl:allValuesFrom [
+        a rdfs:Datatype ;
+        owl:onDatatype xsd:decimal ;
+        owl:withRestrictions (
+            [ xsd:minInclusive "0.0"^^xsd:decimal ]
+            [ xsd:maxInclusive "1.0"^^xsd:decimal ]
+        )
+    ]
+] .

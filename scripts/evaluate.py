@@ -5,7 +5,7 @@ from torch_ac.utils.penv import ParallelEnv
 
 import utils
 from utils import device
-
+import minigrid
 
 # Parse arguments
 

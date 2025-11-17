@@ -3,7 +3,7 @@ import numpy
 
 import utils
 from utils import device
-
+import minigrid
 
 # Parse arguments
 
