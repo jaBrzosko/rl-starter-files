@@ -18,7 +18,7 @@ LAVA = [9, 0, 0]
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def create_masker(mode):
-    if mode == RecommendationMode.FUSEKI:
+    if mode == RecommendationMode.FUSEKI or mode == RecommendationMode.FUSEKI_OPTIMIZED:
         with open("kg/data/recommendations_fuseki_query.rq", "r") as f:
             query = f.read()
     else:
@@ -218,7 +218,7 @@ if __name__ == "__main__":
     parser.add_argument("--iterations", type=int, default=10,
                         help="number of iterations for timing tests (default: 10)")
 
-    parser.add_argument("--graph-mode", choices=["in-memory", "fuseki"], default="in-memory",)
+    parser.add_argument("--graph-mode", choices=["in-memory", "fuseki", "fuseki-optimized"], default="in-memory",)
 
     args = parser.parse_args()
 
@@ -226,6 +226,8 @@ if __name__ == "__main__":
         mode = RecommendationMode.IN_MEMORY
     elif args.graph_mode == "fuseki":
         mode = RecommendationMode.FUSEKI
+    elif args.graph_mode == "fuseki-optimized":
+        mode = RecommendationMode.FUSEKI_OPTIMIZED
 
     if args.mode == "detailed":
         run_performance_test(args.iterations, mode)
