@@ -6,7 +6,7 @@ import tensorboardX
 import sys
 
 import utils
-from kg.masker import KGActionMasker
+from kg.masker import KGActionMasker, RecommendationMode
 from utils import device
 from model import ACModel
 import minigrid
@@ -129,7 +129,7 @@ if __name__ == "__main__":
 
     # Setup action masking
 
-    with open("kg/data/recommendation_query.rq", "r") as f:
+    with open("kg/data/recommendations_fuseki_query.rq", "r") as f:
         query = f.read()
 
     masker = KGActionMasker(
@@ -139,11 +139,10 @@ if __name__ == "__main__":
         domain_uri="http://example.org/minigrid#",
         env_problem_type="crossing",
         action_size=envs[0].action_space.n,
+        recommendation_mode=RecommendationMode.FUSEKI_OPTIMIZED,
     )
 
-
     # Load algo
-
     if args.algo == "a2c":
         algo = torch_ac.A2CAlgo(envs, acmodel, device, args.frames_per_proc, args.discount, args.lr, args.gae_lambda,
                                 args.entropy_coef, args.value_loss_coef, args.max_grad_norm, args.recurrence,

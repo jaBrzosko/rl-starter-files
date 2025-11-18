@@ -64,7 +64,7 @@ class FusekiKGOptimizedRecommender(BaseKGRecommender):
                 triples.append(f"<{cell_obj}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <{self.domain}Cell> .")
                 triples.append(f"<{cell_obj}> <{self.domain}coordinateX> \"{x}\"^^<http://www.w3.org/2001/XMLSchema#integer> .")
                 triples.append(f"<{cell_obj}> <{self.domain}coordinateY> \"{y}\"^^<http://www.w3.org/2001/XMLSchema#integer> .")
-                triples.append(f"<{cell_obj}> <{self.domain}channelValue> \"{','.join(map(str, cell))}\" .")
+                triples.append(f"<{cell_obj}> <{self.domain}channelValue> \"{','.join(map(str, [int(v) for v in cell]))}\" .")
 
         triples_str = "\n".join(triples)
 
