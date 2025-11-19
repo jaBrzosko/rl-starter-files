@@ -89,7 +89,7 @@ class FusekiKGOptimizedRecommender(BaseKGRecommender):
         for row in results["results"]["bindings"]:
             idx = int(row["maskedActionIndex"]["value"])
             weight = float(row["maskWeight"]["value"])
-            action_mask[idx] = 1 - weight
+            action_mask[idx] = action_mask[idx] * (1 - weight)
 
         # Cleanup
         self._send_update(f"DROP GRAPH <{tmp_graph}>")

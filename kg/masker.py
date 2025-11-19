@@ -53,6 +53,8 @@ class KGActionMasker:
     def get_action_mask(self, observation, device):
         masks_raw = []
         for obs in observation.image:
+            if isinstance(obs, torch.Tensor):
+                obs = obs.cpu().detach().numpy()
             action_mask = self.recommender.get_action_mask(obs)
             masks_raw.append(action_mask)
 

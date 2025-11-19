@@ -13,8 +13,8 @@ class LocalKGRecommender(BaseKGRecommender):
         results = combined_kg.query(sparql)
 
         for row in results:
-            masked_index = row.maskedActionIndex.toPython()
+            idx = row.maskedActionIndex.toPython()
             weight = float(row.maskWeight)
-            action_mask[masked_index] = 1 - weight
+            action_mask[idx] = action_mask[idx] * (1 - weight)
 
         return action_mask

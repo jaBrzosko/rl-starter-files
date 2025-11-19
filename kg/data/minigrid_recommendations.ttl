@@ -50,6 +50,10 @@ mg:cellType_unseen a mg:CellType ;
     mg:cellTypeName "unseen" ;
     mg:channelValue "0,0,0" .
 
+mg:cellType_goal a mg:CellType ;
+    mg:cellTypeName "goal" ;
+    mg:channelValue "8,1,0" .
+
 # Problem Types
 
 mg:problemType_crossing a mg:ProblemType ;
@@ -102,6 +106,21 @@ mg:requirement_lava_ahead a mg:Requirement ;
     mg:positionX "3"^^xsd:int ;
     mg:positionY "6"^^xsd:int ;
     mg:requiresCellType mg:cellType_lava .
+
+# Wall Ahead Recommendation
+
+mg:recommendation_avoid_wall a mg:Recommendation ;
+    mg:recommendationId "rec_avoid_wall" ;
+    mg:recommendationName "Avoid Wall" ;
+    mg:recommendationDescription "This recommendation advises the agent to avoid moving forward when there is a wall directly in front of them." ;
+    mg:hasProblemType mg:problemType_crossing ;
+    mg:hasMask mg:mask_no_forward ;
+    mg:hasRequirement mg:requirement_wall_ahead .
+
+mg:requirement_wall_ahead a mg:Requirement ;
+    mg:positionX "3"^^xsd:int ;
+    mg:positionY "6"^^xsd:int ;
+    mg:requiresCellType mg:cellType_wall .
 
 # Unused Actions Masking Recommendation
 
@@ -159,3 +178,156 @@ mg:requirement_guess_walls_right_second a mg:Requirement ;
     mg:positionX "4"^^xsd:int ;
     mg:positionY "5"^^xsd:int ;
     mg:requiresCellType mg:cellType_wall .
+
+# Goal Ahead Recommendation
+mg:recommendation_move_towards_gaol_1F a mg:Recommendation ;
+    mg:recommendationId "rec_move_towards_goal_1F" ;
+    mg:recommendationName "Move Towards Goal 1 Forward" ;
+    mg:recommendationDescription "This recommendation advises the agent to move forward when the goal is directly ahead." ;
+    mg:hasProblemType mg:problemType_crossing ;
+    mg:hasRequirement mg:requirement_goal_ahead_1F ;
+    mg:hasMask mg:mask_almost_no_left, mg:mask_almost_no_right .
+
+mg:requirement_goal_ahead_1F a mg:Requirement ;
+    mg:positionX "3"^^xsd:int ;
+    mg:positionY "6"^^xsd:int ;
+    mg:requiresCellType mg:cellType_goal .
+
+mg:mask_almost_no_left a mg:Mask ;
+    mg:maskDescription "Almost completely masks the left action." ;
+    mg:maskWeight "0.9"^^xsd:decimal ;
+    mg:masksAction mg:action_left .
+
+mg:mask_almost_no_right a mg:Mask ;
+    mg:maskDescription "Almost completely masks the right action." ;
+    mg:maskWeight "0.9"^^xsd:decimal ;
+    mg:masksAction mg:action_right .
+
+mg:recommendation_move_towards_gaol_2F a mg:Recommendation ;
+    mg:recommendationId "rec_move_towards_goal_2F" ;
+    mg:recommendationName "Move Towards Goal 2 Forward" ;
+    mg:recommendationDescription "This recommendation advises the agent to move forward when the goal is two steps ahead and one step forward is clear." ;
+    mg:hasProblemType mg:problemType_crossing ;
+    mg:hasRequirement mg:requirement_goal_ahead_2F, mg:requirement_goal_ahead_1F_clear ;
+    mg:hasMask mg:mask_almost_no_left, mg:mask_almost_no_right .
+
+mg:requirement_goal_ahead_2F a mg:Requirement ;
+    mg:positionX "3"^^xsd:int ;
+    mg:positionY "5"^^xsd:int ;
+    mg:requiresCellType mg:cellType_goal .
+
+mg:requirement_goal_ahead_1F_clear a mg:Requirement ;
+    mg:positionX "3"^^xsd:int ;
+    mg:positionY "6"^^xsd:int ;
+    mg:requiresCellType mg:cellType_empty .
+
+mg:recommendation_move_towards_gaol_3F a mg:Recommendation ;
+    mg:recommendationId "rec_move_towards_goal_3F" ;
+    mg:recommendationName "Move Towards Goal 3 Forward" ;
+    mg:recommendationDescription "This recommendation advises the agent to move forward when the goal is three steps ahead and the first two steps forward are clear." ;
+    mg:hasProblemType mg:problemType_crossing ;
+    mg:hasRequirement mg:requirement_goal_ahead_3F, mg:requirement_goal_ahead_2F_clear, mg:requirement_goal_ahead_1F_clear ;
+    mg:hasMask mg:mask_almost_no_left, mg:mask_almost_no_right .
+
+mg:requirement_goal_ahead_3F a mg:Requirement ;
+    mg:positionX "3"^^xsd:int ;
+    mg:positionY "4"^^xsd:int ;
+    mg:requiresCellType mg:cellType_goal .
+
+mg:requirement_goal_ahead_2F_clear a mg:Requirement ;
+    mg:positionX "3"^^xsd:int ;
+    mg:positionY "5"^^xsd:int ;
+    mg:requiresCellType mg:cellType_empty .
+
+# Goal Diagonal Recommendation - Left
+
+mg:recommendation_move_towards_goal_diag_left a mg:Recommendation ;
+    mg:recommendationId "rec_move_towards_goal_diag_left" ;
+    mg:recommendationName "Move Towards Goal Diagonal Left " ;
+    mg:recommendationDescription "This recommendation advises the agent to go straight (and then left) when the goal is diagonally left ahead." ;
+    mg:hasProblemType mg:problemType_crossing ;
+    mg:hasRequirement mg:requirement_goal_diag_left_1F, mg:requirement_goal_ahead_1F_clear ;
+    mg:hasMask mg:mask_almost_no_right, mg:mask_crossing_maybe_no_left .
+
+mg:requirement_goal_diag_left_1F a mg:Requirement ;
+    mg:positionX "2"^^xsd:int ;
+    mg:positionY "6"^^xsd:int ;
+    mg:requiresCellType mg:cellType_goal .
+
+mg:recommendation_move_towards_goal_diag_left_2F_1L a mg:Recommendation ;
+    mg:recommendationId "rec_move_towards_goal_diag_left_2F_1L" ;
+    mg:recommendationName "Move Towards Goal Diagonal Left 2 Forward 1 Left" ;
+    mg:recommendationDescription "This recommendation advises the agent to go straight for two steps (and then left) when the goal is diagonally left ahead." ;
+    mg:hasProblemType mg:problemType_crossing ;
+    mg:hasRequirement mg:requirement_goal_diag_left_2F_1L, mg:requirement_goal_ahead_2F_clear, mg:requirement_goal_ahead_1F_clear ;
+    mg:hasMask mg:mask_almost_no_right, mg:mask_crossing_maybe_no_left .
+
+mg:requirement_goal_diag_left_2F_1L a mg:Requirement ;
+    mg:positionX "2"^^xsd:int ;
+    mg:positionY "5"^^xsd:int ;
+    mg:requiresCellType mg:cellType_goal .
+
+mg:recommendation_move_towards_goal_diag_left_1F_2L a mg:Recommendation ;
+    mg:recommendationId "rec_move_towards_goal_diag_left_1F_2L" ;
+    mg:recommendationName "Move Towards Goal Diagonal Left 1 Forward 2 Left" ;
+    mg:recommendationDescription "This recommendation advises the agent to go straight for one step (and then left twice) when the goal is diagonally left ahead." ;
+    mg:hasProblemType mg:problemType_crossing ;
+    mg:hasRequirement mg:requirement_goal_diag_left_1F_2L, mg:requirement_goal_ahead_1F_1L_clear, mg:requirement_goal_ahead_1F_clear ;
+    mg:hasMask mg:mask_almost_no_right, mg:mask_crossing_maybe_no_left .
+
+mg:requirement_goal_diag_left_1F_2L a mg:Requirement ;
+    mg:positionX "1"^^xsd:int ;
+    mg:positionY "6"^^xsd:int ;
+    mg:requiresCellType mg:cellType_goal .
+
+mg:requirement_goal_diag_1F_1L_clear a mg:Requirement ;
+    mg:positionX "2"^^xsd:int ;
+    mg:positionY "6"^^xsd:int ;
+    mg:requiresCellType mg:cellType_empty .
+
+
+# Goal Diagonal Recommendation - Right
+
+mg:recommendation_move_towards_goal_diag_right a mg:Recommendation ;
+    mg:recommendationId "rec_move_towards_goal_diag_right" ;
+    mg:recommendationName "Move Towards Goal Diagonal Right " ;
+    mg:recommendationDescription "This recommendation advises the agent to go straight (and then right) when the goal is diagonally right ahead." ;
+    mg:hasProblemType mg:problemType_crossing ;
+    mg:hasRequirement mg:requirement_goal_diag_right_1F, mg:requirement_goal_ahead_1F_clear ;
+    mg:hasMask mg:mask_almost_no_left, mg:mask_crossing_maybe_no_right .
+
+mg:requirement_goal_diag_right_1F a mg:Requirement ;
+    mg:positionX "4"^^xsd:int ;
+    mg:positionY "6"^^xsd:int ;
+    mg:requiresCellType mg:cellType_goal .
+
+mg:recommendation_move_towards_goal_diag_right_2F_2R a mg:Recommendation ;
+    mg:recommendationId "rec_move_towards_goal_diag_right_2F_@r" ;
+    mg:recommendationName "Move Towards Goal Diagonal Right 2 Forward 1 Right" ;
+    mg:recommendationDescription "This recommendation advises the agent to go straight for two steps (and then right) when the goal is diagonally right ahead." ;
+    mg:hasProblemType mg:problemType_crossing ;
+    mg:hasRequirement mg:requirement_goal_diag_right_2F_1R, mg:requirement_goal_ahead_2F_clear, mg:requirement_goal_ahead_1F_clear ;
+    mg:hasMask mg:mask_almost_no_left, mg:mask_crossing_maybe_no_right .
+
+mg:requirement_goal_diag_right_2F_1R a mg:Requirement ;
+    mg:positionX "4"^^xsd:int ;
+    mg:positionY "5"^^xsd:int ;
+    mg:requiresCellType mg:cellType_goal .
+
+mg:recommendation_move_towards_goal_diag_right_1F_2R a mg:Recommendation ;
+    mg:recommendationId "rec_move_towards_goal_diag_right_1F_2R" ;
+    mg:recommendationName "Move Towards Goal Diagonal Right 1 Forward 2 Right" ;
+    mg:recommendationDescription "This recommendation advises the agent to go straight for one step (and then right twice) when the goal is diagonally right ahead." ;
+    mg:hasProblemType mg:problemType_crossing ;
+    mg:hasRequirement mg:requirement_goal_diag_right_1F_2R, mg:requirement_goal_ahead_1F_1R_clear, mg:requirement_goal_ahead_1F_clear ;
+    mg:hasMask mg:mask_almost_no_left, mg:mask_crossing_maybe_no_right .
+
+mg:requirement_goal_diag_right_1F_2R a mg:Requirement ;
+    mg:positionX "5"^^xsd:int ;
+    mg:positionY "6"^^xsd:int ;
+    mg:requiresCellType mg:cellType_goal .
+
+mg:requirement_goal_diag_1F_1R_clear a mg:Requirement ;
+    mg:positionX "4"^^xsd:int ;
+    mg:positionY "6"^^xsd:int ;
+    mg:requiresCellType mg:cellType_empty .

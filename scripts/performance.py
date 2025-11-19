@@ -15,6 +15,8 @@ UNSEEN = [0, 0, 0]
 WALL = [2, 5, 0]
 EMPTY = [1, 0, 0]
 LAVA = [9, 0, 0]
+GOAL = [8, 1, 0]
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def create_masker(mode):
@@ -42,16 +44,23 @@ def create_sample_env_state():
     test_map[2][6] = WALL
     test_map[2][5] = WALL
     test_map[2][4] = WALL
-    test_map[3][4] = WALL
-    test_map[4][4] = WALL
-    test_map[5][4] = WALL
-    test_map[6][4] = WALL
-    test_map[3][6] = LAVA
+    test_map[2][3] = WALL
+    test_map[3][3] = WALL
+    test_map[4][3] = WALL
+    test_map[5][3] = WALL
+    test_map[6][3] = WALL
+
+    test_map[3][6] = EMPTY
     test_map[4][6] = LAVA
     test_map[5][6] = LAVA
     test_map[6][6] = LAVA
+
+    test_map[3][4] = EMPTY
+    test_map[4][4] = EMPTY
+    test_map[5][4] = EMPTY
+    test_map[6][4] = EMPTY
     test_map[3][5] = EMPTY
-    test_map[4][5] = EMPTY
+    test_map[4][5] = GOAL
     test_map[5][5] = EMPTY
     test_map[6][5] = EMPTY
     return torch_ac.DictList({
