@@ -23,6 +23,11 @@ def get_storage_dir():
 def get_model_dir(model_name):
     return os.path.join(get_storage_dir(), model_name)
 
+def get_experiment_dir(experiment_name):
+    return os.path.join(get_storage_dir(), "experiments", experiment_name)
+
+def get_model_dir_for_experiment(experiment_name, model_name, run_number):
+    return os.path.join(get_experiment_dir(experiment_name), f"{model_name}_run{run_number:02d}")
 
 def get_status_path(model_dir):
     return os.path.join(model_dir, "status.pt")
