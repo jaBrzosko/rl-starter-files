@@ -1,0 +1,326 @@
+@prefix mg: <http://example.org/minigrid#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Actions
+
+mg:action_left a mg:Action ;
+    mg:actionName "left" ;
+    mg:actionIndex "0"^^xsd:int .
+
+mg:action_right a mg:Action ;
+    mg:actionName "right" ;
+    mg:actionIndex "1"^^xsd:int .
+
+mg:action_forward a mg:Action ;
+    mg:actionName "forward" ;
+    mg:actionIndex "2"^^xsd:int .
+
+mg:action_pickup a mg:Action ;
+    mg:actionName "pickup" ;
+    mg:actionIndex "3"^^xsd:int .
+
+mg:action_drop a mg:Action ;
+    mg:actionName "drop" ;
+    mg:actionIndex "4"^^xsd:int .
+
+mg:action_toggle a mg:Action ;
+    mg:actionName "toggle" ;
+    mg:actionIndex "5"^^xsd:int .
+
+mg:action_done a mg:Action ;
+    mg:actionName "done" ;
+    mg:actionIndex "6"^^xsd:int .
+
+# Cell Types and channel values
+
+mg:cellType_empty a mg:CellType ;
+    mg:cellTypeName "empty" ;
+    mg:channelValue "1.0,0.0,0.0" .
+
+mg:cellType_wall a mg:CellType ;
+    mg:cellTypeName "wall" ;
+    mg:channelValue "2.0,5.0,0.0" .
+
+mg:cellType_lava a mg:CellType ;
+    mg:cellTypeName "lava" ;
+    mg:channelValue "9.0,0.0,0.0" .
+
+mg:cellType_unseen a mg:CellType ;
+    mg:cellTypeName "unseen" ;
+    mg:channelValue "0.0,0.0,0.0" .
+
+mg:cellType_goal a mg:CellType ;
+    mg:cellTypeName "goal" ;
+    mg:channelValue "8.0,1.0,0.0" .
+
+# Problem Types
+
+mg:problemType_empty a mg:ProblemType ;
+    mg:problemTypeName "empty"
+    mg:problemTypeDescription "A minigrid environment where the room is empty with no obstacles in the way." ;
+    mg:problemTypeDocumentationLink "https://minigrid.farama.org/environments/minigrid/EmptyEnv/" .
+
+# Masks
+
+mg:mask_no_forward a mg:Mask ;
+    mg:maskDescription "Masks the forward action completely." ;
+    mg:maskWeight "1.0"^^xsd:decimal ;
+    mg:masksAction mg:action_forward .
+
+mg:mask_no_pickup a mg:Mask ;
+    mg:maskDescription "Masks the pickup action completely." ;
+    mg:maskWeight "1.0"^^xsd:decimal ;
+    mg:masksAction mg:action_pickup .
+
+mg:mask_no_drop a mg:Mask ;
+    mg:maskDescription "Masks the drop action completely." ;
+    mg:maskWeight "1.0"^^xsd:decimal ;
+    mg:masksAction mg:action_drop .
+
+mg:mask_no_toggle a mg:Mask ;
+    mg:maskDescription "Masks the toggle action completely." ;
+    mg:maskWeight "1.0"^^xsd:decimal ;
+    mg:masksAction mg:action_toggle .
+
+mg:mask_no_done a mg:Mask ;
+    mg:maskDescription "Masks the done action completely." ;
+    mg:maskWeight "1.0"^^xsd:decimal ;
+    mg:masksAction mg:action_done .
+
+# =======================================
+# Recommendations
+# =======================================
+
+# Wall Ahead Recommendation
+
+mg:recommendation_avoid_wall a mg:Recommendation ;
+    mg:recommendationId "rec_avoid_wall" ;
+    mg:recommendationName "Avoid Wall" ;
+    mg:recommendationDescription "This recommendation advises the agent to avoid moving forward when there is a wall directly in front of them." ;
+    mg:hasProblemType mg:problemType_empty ;
+    mg:hasMask mg:mask_no_forward ;
+    mg:hasRequirement mg:requirement_wall_ahead .
+
+mg:requirement_wall_ahead a mg:Requirement ;
+    mg:positionX "3"^^xsd:int ;
+    mg:positionY "5"^^xsd:int ;
+    mg:requiresCellType mg:cellType_wall .
+
+# Unused Actions Masking Recommendation
+
+mg:recommendation_mask_unused_crossing a mg:Recommendation ;
+    mg:recommendationId "rec_mask_unused_crossing" ;
+    mg:recommendationName "Mask Unused Actions for Crossing" ;
+    mg:recommendationDescription "This recommendation suggests masking actions that are not useful in crossing environments." ;
+    mg:hasProblemType mg:problemType_empty ;
+    mg:hasMask mg:mask_no_pickup, mg:mask_no_drop, mg:mask_no_toggle, mg:mask_no_done .
+
+# Wall Turning Recommendations
+
+mg:recommendation_wall_left a mg:Recommendation ;
+    mg:recommendationId "rec_guess_walls_left" ;
+    mg:recommendationName "Wall on the Left" ;
+    mg:recommendationDescription "This recommendation advises the agent to not turn left when there is a wall on the left and empty space on the right." ;
+    mg:hasProblemType mg:problemType_empty ;
+    mg:hasMask mg:mask_crossing_maybe_no_left ;
+    mg:hasRequirement mg:requirement_wall_left , mg:requirement_empty_right .
+
+mg:mask_crossing_maybe_no_left a mg:Mask ;
+    mg:maskDescription "Partial masking of the left turn action." ;
+    mg:maskWeight "0.5"^^xsd:decimal ;
+    mg:masksAction mg:action_left .
+
+mg:requirement_wall_left a mg:Requirement ;
+    mg:positionX "2"^^xsd:int ;
+    mg:positionY "6"^^xsd:int ;
+    mg:requiresCellType mg:cellType_wall .
+
+mg:requirement_empty_right a mg:Requirement ;
+    mg:positionX "4"^^xsd:int ;
+    mg:positionY "6"^^xsd:int ;
+    mg:requiresCellType mg:cellType_empty .
+
+mg:recommendation_wall_right a mg:Recommendation ;
+    mg:recommendationId "rec_guess_walls_right" ;
+    mg:recommendationName "Wall on the Right" ;
+    mg:recommendationDescription "This recommendation advises the agent to not turn right when there is a wall on the right and empty space on the left." ;
+    mg:hasProblemType mg:problemType_empty ;
+    mg:hasMask mg:mask_crossing_maybe_no_right ;
+    mg:hasRequirement mg:requirement_wall_right , mg:requirement_empty_left .
+
+mg:mask_crossing_maybe_no_right a mg:Mask ;
+    mg:maskDescription "Partial masking of the right turn action." ;
+    mg:maskWeight "0.5"^^xsd:decimal ;
+    mg:masksAction mg:action_right .
+
+mg:requirement_wall_right a mg:Requirement ;
+    mg:positionX "4"^^xsd:int ;
+    mg:positionY "6"^^xsd:int ;
+    mg:requiresCellType mg:cellType_wall .
+
+mg:requirement_empty_left a mg:Requirement ;
+    mg:positionX "2"^^xsd:int ;
+    mg:positionY "6"^^xsd:int ;
+    mg:requiresCellType mg:cellType_empty .
+
+# Goal Ahead Recommendation
+
+mg:recommendation_goal_ahead_1_Tile a mg:Recommendation ;
+    mg:recommendationId "rec_goal_ahead_1_tile" ;
+    mg:recommendationName "Goal Ahead 1 Tile" ;
+    mg:recommendationDescription "This recommendation advises the agent to move forward when the goal is one tile ahead." ;
+    mg:hasProblemType mg:problemType_empty ;
+    mg:hasMask mg:mask_almost_no_left, mg:mask_almost_no_right ;
+    mg:hasRequirement mg:requirement_goal_ahead_1_tile .
+
+
+mg:requirement_goal_ahead_1_tile a mg:Requirement ;
+    mg:positionX "3"^^xsd:int ;
+    mg:positionY "5"^^xsd:int ;
+    mg:requiresCellType mg:cellType_goal .
+
+mg:mask_almost_no_left a mg:Mask ;
+    mg:maskDescription "Masks the left turn action almost completely." ;
+    mg:maskWeight "0.9"^^xsd:decimal ;
+    mg:masksAction mg:action_left .
+
+mg:mask_almost_no_right a mg:Mask ;
+    mg:maskDescription "Masks the right turn action almost completely." ;
+    mg:maskWeight "0.9"^^xsd:decimal ;
+    mg:masksAction mg:action_right .
+
+mg:recommendation_goal_ahead_2_Tiles a mg:Recommendation ;
+    mg:recommendationId "rec_goal_ahead_2_tiles" ;
+    mg:recommendationName "Goal Ahead 2 Tiles" ;
+    mg:recommendationDescription "This recommendation advises the agent to move forward when the goal is two tiles ahead." ;
+    mg:hasProblemType mg:problemType_empty ;
+    mg:hasMask mg:mask_almost_no_left, mg:mask_almost_no_right ;
+    mg:hasRequirement mg:requirement_goal_ahead_2_tiles, mg:requirement_empty_ahead_1_tile .
+
+mg:requirement_goal_ahead_2_tiles a mg:Requirement ;
+    mg:positionX "3"^^xsd:int ;
+    mg:positionY "4"^^xsd:int ;
+    mg:requiresCellType mg:cellType_goal .
+
+mg:requirement_empty_ahead_1_tile a mg:Requirement ;
+    mg:positionX "3"^^xsd:int ;
+    mg:positionY "5"^^xsd:int ;
+    mg:requiresCellType mg:cellType_empty .
+
+mg:recommendation_goal_ahead_3_Tiles a mg:Recommendation ;
+    mg:recommendationId "rec_goal_ahead_3_tiles" ;
+    mg:recommendationName "Goal Ahead 3 Tiles" ;
+    mg:recommendationDescription "This recommendation advises the agent to move forward when the goal is three tiles ahead." ;
+    mg:hasProblemType mg:problemType_empty ;
+    mg:hasMask mg:mask_almost_no_left, mg:mask_almost_no_right ;
+    mg:hasRequirement mg:requirement_goal_ahead_3_tiles , mg:requirement_empty_ahead_2_tiles, mg:requirement_empty_ahead_1_tile .
+
+mg:requirement_goal_ahead_3_tiles a mg:Requirement ;
+    mg:positionX "3"^^xsd:int ;
+    mg:positionY "3"^^xsd:int ;
+    mg:requiresCellType mg:cellType_goal .
+
+mg:requirement_empty_ahead_2_tiles a mg:Requirement ;
+    mg:positionX "3"^^xsd:int ;
+    mg:positionY "4"^^xsd:int ;
+    mg:requiresCellType mg:cellType_empty .
+
+# Goal Diagonal To The Left Recommendation
+
+mg:recommendation_goal_diagonal_left_1_Tile a mg:Recommendation ;
+    mg:recommendationId "rec_goal_diagonal_left_1_tile" ;
+    mg:recommendationName "Goal Diagonal Left 1 Tile" ;
+    mg:recommendationDescription "This recommendation advises the agent to turn left and move forward when the goal is diagonally to the left one tile away." ;
+    mg:hasProblemType mg:problemType_empty ;
+    mg:hasMask mg:mask_almost_no_right ;
+    mg:hasRequirement mg:requirement_goal_diagonal_left_1_tile , mg:requirement_empty_ahead_1_tile .
+
+mg:requirement_goal_diagonal_left_1_tile a mg:Requirement ;
+    mg:positionX "2"^^xsd:int ;
+    mg:positionY "5"^^xsd:int ;
+    mg:requiresCellType mg:cellType_goal .
+
+# Goal Diagonal To The Right Recommendation
+mg:recommendation_goal_diagonal_right_1_Tile a mg:Recommendation ;
+    mg:recommendationId "rec_goal_diagonal_right_1_tile" ;
+    mg:recommendationName "Goal Diagonal Right 1 Tile" ;
+    mg:recommendationDescription "This recommendation advises the agent to turn right and move forward when the goal is diagonally to the right one tile away." ;
+    mg:hasProblemType mg:problemType_empty ;
+    mg:hasMask mg:mask_almost_no_left ;
+    mg:hasRequirement mg:requirement_goal_diagonal_right_1_tile , mg:requirement_empty_ahead_1_tile .
+
+mg:requirement_goal_diagonal_right_1_tile a mg:Requirement ;
+    mg:positionX "4"^^xsd:int ;
+    mg:positionY "5"^^xsd:int ;
+    mg:requiresCellType mg:cellType_goal .
+
+# Goal Directly Left Recommendation
+
+mg:recommendation_goal_left_1_Tile a mg:Recommendation ;
+    mg:recommendationId "rec_goal_left_1_tile" ;
+    mg:recommendationName "Goal Left 1 Tile" ;
+    mg:recommendationDescription "This recommendation advises the agent to turn left when the goal is directly to the left one tile away." ;
+    mg:hasProblemType mg:problemType_empty ;
+    mg:hasMask mg:mask_almost_no_forward, mg:mask_almost_no_right ;
+    mg:hasRequirement mg:requirement_goal_left_1_tile .
+
+mg:requirement_goal_left_1_tile a mg:Requirement ;
+    mg:positionX "2"^^xsd:int ;
+    mg:positionY "6"^^xsd:int ;
+    mg:requiresCellType mg:cellType_goal .
+
+mg:mask_almost_no_forward a mg:Mask ;
+    mg:maskDescription "Masks the forward action almost completely." ;
+    mg:maskWeight "0.9"^^xsd:decimal ;
+    mg:masksAction mg:action_forward .
+
+mg:recommendation_goal_left_2_Tiles a mg:Recommendation ;
+    mg:recommendationId "rec_goal_left_2_tiles" ;
+    mg:recommendationName "Goal Left 2 Tiles" ;
+    mg:recommendationDescription "This recommendation advises the agent to turn left when the goal is directly to the left two tiles away." ;
+    mg:hasProblemType mg:problemType_empty ;
+    mg:hasMask mg:mask_almost_no_forward, mg:mask_almost_no_right ;
+    mg:hasRequirement mg:requirement_goal_left_2_tiles , mg:requirement_empty_left_1_tile .
+
+mg:requirement_goal_left_2_tiles a mg:Requirement ;
+    mg:positionX "1"^^xsd:int ;
+    mg:positionY "6"^^xsd:int ;
+    mg:requiresCellType mg:cellType_goal .    
+
+mg:requirement_empty_left_1_tile a mg:Requirement ;
+    mg:positionX "2"^^xsd:int ;
+    mg:positionY "6"^^xsd:int ;
+    mg:requiresCellType mg:cellType_empty .
+
+# Goal Directly Right Recommendation
+mg:recommendation_goal_right_1_Tile a mg:Recommendation ;
+    mg:recommendationId "rec_goal_right_1_tile" ;
+    mg:recommendationName "Goal Right 1 Tile" ;
+    mg:recommendationDescription "This recommendation advises the agent to turn right when the goal is directly to the right one tile away." ;
+    mg:hasProblemType mg:problemType_empty ;
+    mg:hasMask mg:mask_almost_no_forward, mg:mask_almost_no_left ;
+    mg:hasRequirement mg:requirement_goal_right_1_tile .
+
+mg:requirement_goal_right_1_tile a mg:Requirement ;
+    mg:positionX "4"^^xsd:int ;
+    mg:positionY "6"^^xsd:int ;
+    mg:requiresCellType mg:cellType_goal .
+
+mg:recommendation_goal_right_2_Tiles a mg:Recommendation ;
+    mg:recommendationId "rec_goal_right_2_tiles" ;
+    mg:recommendationName "Goal Right 2 Tiles" ;
+    mg:recommendationDescription "This recommendation advises the agent to turn right when the goal is directly to the right two tiles away." ;
+    mg:hasProblemType mg:problemType_empty ;
+    mg:hasMask mg:mask_almost_no_forward, mg:mask_almost_no_left ;
+    mg:hasRequirement mg:requirement_goal_right_2_tiles , mg:requirement_empty_right_1_tile .
+
+mg:requirement_goal_right_2_tiles a mg:Requirement ;
+    mg:positionX "5"^^xsd:int ;
+    mg:positionY "6"^^xsd:int ;
+    mg:requiresCellType mg:cellType_goal .
+
+mg:requirement_empty_right_1_tile a mg:Requirement ;
+    mg:positionX "4"^^xsd:int ;
+    mg:positionY "6"^^xsd:int ;
+    mg:requiresCellType mg:cellType_empty .

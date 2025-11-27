@@ -45,16 +45,16 @@ def read_experiment(experiment_name):
     elif experiment_name == "empty_kg_base":
         args = Args()
         args.env = empty_env_name
-        args.frames = 100_000
+        args.frames = 50_000
         args.use_kg = True
-        args.kg_recommendation_file = None # TODO: Set appropriate path
+        args.kg_recommendation_file = "kg/data/experiments/minigrid_recommendations_empty_simple.ttl"
         args.kg_problem_type = "empty"
-    elif experiment_name == "empty_kg_extended":
+    elif experiment_name == "empty_kg_complex":
         args = Args()
         args.env = empty_env_name
-        args.frames = 100_000
+        args.frames = 50_000
         args.use_kg = True
-        args.kg_recommendation_file = None # TODO: Set appropriate path
+        args.kg_recommendation_file = "kg/data/experiments/minigrid_recommendations_empty_complex.ttl"
         args.kg_problem_type = "empty"
     elif experiment_name == "lava_gap_base":
         args = Args()
@@ -67,34 +67,34 @@ def read_experiment(experiment_name):
         args.use_kg = True
         args.kg_recommendation_file = "kg/data/experiments/minigrid_recommendations_lava_simple.ttl"
         args.kg_problem_type = "crossing"
-    elif experiment_name == "lava_gap_kg_extended":
+    elif experiment_name == "lava_gap_kg_complex":
         args = Args()
         args.env = lava_gap_env_name
         args.frames = 150_000
         args.use_kg = True
-        args.kg_recommendation_file = "kg/data/experiments/minigrid_recommendations_lava_extended.ttl"
+        args.kg_recommendation_file = "kg/data/experiments/minigrid_recommendations_lava_complex.ttl"
         args.kg_problem_type = "crossing"
-    elif experiment_name == "lava_crossing_base":
-        args = Args()
-        args.env = lava_crossing_env_name
-        args.frames = 2_000_000
+    # elif experiment_name == "lava_crossing_base":
+    #     args = Args()
+    #     args.env = lava_crossing_env_name
+    #     args.frames = 2_000_000
     elif experiment_name == "door_key_base":
         args = Args()
         args.env = door_key_env_name    
         args.frames = 300_000
     elif experiment_name == "door_key_kg_base":
         args = Args()
-        args.env = "MiniGrid-DoorKey-6x6-v0"
+        args.env = door_key_env_name
         args.frames = 200_000
         args.use_kg = True
         args.kg_recommendation_file = None # TODO: Set appropriate path
         args.kg_problem_type = "door_key"
-    elif experiment_name == "door_key_kg_extended":
+    elif experiment_name == "door_key_kg_complex":
         args = Args()
-        args.env = "MiniGrid-DoorKey-6x6-v0"
+        args.env = door_key_env_name
         args.frames = 200_000
         args.use_kg = True
-        args.kg_recommendation_file = None
+        args.kg_recommendation_file = "kg/data/experiments/minigrid_recommendations_doorkey_complex.ttl"
         args.kg_problem_type = "door_key"
     else:
         raise ValueError(f"Unknown experiment name: {experiment_name}")
