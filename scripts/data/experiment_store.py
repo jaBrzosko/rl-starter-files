@@ -35,6 +35,7 @@ def read_experiment(experiment_name):
     empty_env_name = "MiniGrid-Empty-8x8-v0"
     lava_gap_env_name = "MiniGrid-LavaGapS7-v0"
     lava_crossing_env_name = "MiniGrid-LavaCrossingS9N1-v0"
+    door_key_env_name = "MiniGrid-DoorKey-6x6-v0"
     query_path = "kg/data/recommendation_query.rq"
 
     if experiment_name == "empty_base":
@@ -66,10 +67,35 @@ def read_experiment(experiment_name):
         args.use_kg = True
         args.kg_recommendation_file = "kg/data/experiments/minigrid_recommendations_lava_simple.ttl"
         args.kg_problem_type = "crossing"
+    elif experiment_name == "lava_gap_kg_extended":
+        args = Args()
+        args.env = lava_gap_env_name
+        args.frames = 150_000
+        args.use_kg = True
+        args.kg_recommendation_file = "kg/data/experiments/minigrid_recommendations_lava_extended.ttl"
+        args.kg_problem_type = "crossing"
     elif experiment_name == "lava_crossing_base":
         args = Args()
         args.env = lava_crossing_env_name
         args.frames = 2_000_000
+    elif experiment_name == "door_key_base":
+        args = Args()
+        args.env = door_key_env_name    
+        args.frames = 300_000
+    elif experiment_name == "door_key_kg_base":
+        args = Args()
+        args.env = "MiniGrid-DoorKey-6x6-v0"
+        args.frames = 200_000
+        args.use_kg = True
+        args.kg_recommendation_file = None # TODO: Set appropriate path
+        args.kg_problem_type = "door_key"
+    elif experiment_name == "door_key_kg_extended":
+        args = Args()
+        args.env = "MiniGrid-DoorKey-6x6-v0"
+        args.frames = 200_000
+        args.use_kg = True
+        args.kg_recommendation_file = None
+        args.kg_problem_type = "door_key"
     else:
         raise ValueError(f"Unknown experiment name: {experiment_name}")
 

@@ -33,7 +33,7 @@ def rotate_map(map):
         for j in range(i, len(map)):
             map[i][j], map[j][i] = map[j][i], map[i][j]
 
-class TestKGValidation(unittest.TestCase):
+class TestSimpleLavaKGValidation(unittest.TestCase):
     def setUp(self):
         recommendation_file = "kg/data/experiments/minigrid_recommendations_lava_simple.ttl"
         problem_type = "crossing"
@@ -49,13 +49,13 @@ class TestKGValidation(unittest.TestCase):
 
     def test_check_unavailable_action_mask(self):
         map = [
-            [UNSEEN,    UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN],
-            [UNSEEN,    UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN],
-            [UNSEEN,    WALL,   WALL,   WALL,   WALL,   WALL,   WALL],
-            [UNSEEN,    WALL,   UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN],
-            [UNSEEN,    WALL,   UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN],
-            [UNSEEN,    WALL,   UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN],
-            [UNSEEN,    WALL,   UNSEEN, AGENT,  UNSEEN, UNSEEN, UNSEEN],
+            [UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN],
+            [UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN],
+            [UNSEEN, WALL,   WALL,   WALL,   WALL,   WALL,   WALL],
+            [UNSEEN, WALL,   EMPTY,  EMPTY,  EMPTY,  EMPTY, EMPTY],
+            [UNSEEN, WALL,   EMPTY,  EMPTY,  EMPTY,  EMPTY, EMPTY],
+            [UNSEEN, WALL,   EMPTY,  EMPTY,  EMPTY,  EMPTY, EMPTY],
+            [UNSEEN, WALL,   EMPTY,  AGENT,  EMPTY,  EMPTY, EMPTY],
         ]
         rotate_map(map)
 
@@ -71,13 +71,13 @@ class TestKGValidation(unittest.TestCase):
 
     def test_check_lava_ahead(self):
         map = [
-            [UNSEEN,    UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN],
-            [UNSEEN,    UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN],
-            [UNSEEN,    WALL,   WALL,   WALL,   WALL,   WALL,   WALL],
-            [UNSEEN,    WALL,   UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN],
-            [UNSEEN,    WALL,   UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN],
-            [UNSEEN,    WALL,   UNSEEN, LAVA,   UNSEEN, UNSEEN, UNSEEN],
-            [UNSEEN,    WALL,   UNSEEN, AGENT,  UNSEEN, UNSEEN, UNSEEN],
+            [UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN],
+            [UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN],
+            [UNSEEN, WALL,   WALL,   WALL,   WALL,   WALL,   WALL],
+            [UNSEEN, WALL,   EMPTY,  EMPTY,  EMPTY,  EMPTY, EMPTY],
+            [UNSEEN, WALL,   EMPTY,  EMPTY,  EMPTY,  EMPTY, EMPTY],
+            [UNSEEN, WALL,   EMPTY,  LAVA,   EMPTY,  EMPTY, EMPTY],
+            [UNSEEN, WALL,   EMPTY,  AGENT,  EMPTY,  EMPTY, EMPTY],
         ]
         rotate_map(map)
 
@@ -93,13 +93,13 @@ class TestKGValidation(unittest.TestCase):
 
     def test_check_wall_ahead(self):
         map = [
-            [UNSEEN,    UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN],
-            [UNSEEN,    UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN],
-            [UNSEEN,    WALL,   WALL,   WALL,   WALL,   WALL,   WALL],
-            [UNSEEN,    WALL,   UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN],
-            [UNSEEN,    WALL,   UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN],
-            [UNSEEN,    WALL,   UNSEEN, WALL,   UNSEEN, UNSEEN, UNSEEN],
-            [UNSEEN,    WALL,   UNSEEN, AGENT,  UNSEEN, UNSEEN, UNSEEN],
+            [UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN],
+            [UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN],
+            [UNSEEN, WALL,   WALL,   WALL,   WALL,   WALL,   WALL],
+            [UNSEEN, WALL,   EMPTY,  EMPTY,  EMPTY,  EMPTY, EMPTY],
+            [UNSEEN, WALL,   EMPTY,  EMPTY,  EMPTY,  EMPTY, EMPTY],
+            [UNSEEN, WALL,   EMPTY,  WALL,   EMPTY,  EMPTY, EMPTY],
+            [UNSEEN, WALL,   EMPTY,  AGENT,  EMPTY,  EMPTY, EMPTY],
         ]
         rotate_map(map)
 
@@ -115,13 +115,13 @@ class TestKGValidation(unittest.TestCase):
 
     def test_check_empty_ahead(self):
         map = [
-            [UNSEEN,    UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN],
-            [UNSEEN,    UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN],
-            [UNSEEN,    WALL,   WALL,   WALL,   WALL,   WALL,   WALL],
-            [UNSEEN,    WALL,   UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN],
-            [UNSEEN,    WALL,   UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN],
-            [UNSEEN,    WALL,   WALL,   UNSEEN, LAVA,   LAVA,   LAVA],
-            [UNSEEN,    WALL,   UNSEEN, AGENT,  UNSEEN, UNSEEN, UNSEEN],
+            [UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN],
+            [UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN, UNSEEN],
+            [UNSEEN, WALL,   WALL,   WALL,   WALL,   WALL,   WALL],
+            [UNSEEN, WALL,   EMPTY,  EMPTY,  EMPTY,  EMPTY,  EMPTY],
+            [UNSEEN, WALL,   EMPTY,  EMPTY,  EMPTY,  EMPTY,  EMPTY],
+            [UNSEEN, WALL,   WALL,   EMPTY,  LAVA,   LAVA,   LAVA],
+            [UNSEEN, WALL,   EMPTY,  AGENT,  EMPTY,  EMPTY,  EMPTY],
         ]
         rotate_map(map)
 
@@ -134,7 +134,6 @@ class TestKGValidation(unittest.TestCase):
         expected_mask = torch.tensor([1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0]).unsqueeze(0)
 
         self.assertTrue(torch.equal(action_mask, expected_mask), f"Expected mask: {expected_mask}, but got: {action_mask}")
-
 
 if __name__ == "__main__":
     unittest.main()
