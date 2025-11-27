@@ -134,7 +134,7 @@ if __name__ == "__main__":
 
     masker = KGActionMasker(
         ontology_file="kg/data/minigrid_ontology.ttl",
-        recommendation_file="kg/data/minigrid_recommendations.ttl",
+        recommendation_file="kg/data/experiments/minigrid_recommendations_lava_simple.ttl",
         query=query,
         domain_uri="http://example.org/minigrid#",
         env_problem_type="crossing",

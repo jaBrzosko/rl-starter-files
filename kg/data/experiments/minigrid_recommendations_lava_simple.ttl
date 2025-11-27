@@ -36,19 +36,19 @@ mg:action_done a mg:Action ;
 
 mg:cellType_empty a mg:CellType ;
     mg:cellTypeName "empty" ;
-    mg:channelValue "1,0,0" .
+    mg:channelValue "1.0,0.0,0.0" .
 
 mg:cellType_wall a mg:CellType ;
     mg:cellTypeName "wall" ;
-    mg:channelValue "2,5,0" .
+    mg:channelValue "2.0,5.0,0.0" .
 
 mg:cellType_lava a mg:CellType ;
     mg:cellTypeName "lava" ;
-    mg:channelValue "9,0,0" .
+    mg:channelValue "9.0,0.0,0.0" .
 
 mg:cellType_unseen a mg:CellType ;
     mg:cellTypeName "unseen" ;
-    mg:channelValue "0,0,0" .
+    mg:channelValue "0.0,0.0,0.0" .
 
 # Problem Types
 
