@@ -1,6 +1,7 @@
 from kg.recommendations.localKGRecommender import LocalKGRecommender as Local
 from kg.recommendations.fusekiKGRecommender import FusekiKGRecommender as Fuseki
 from kg.recommendations.fusekiKGOptimizedRecommender import FusekiKGOptimizedRecommender as FusekiOptimized
+from kg.recommendations.oxigraphKGRecommender import OxigraphKGRecommender as Oxigraph
 import torch
 from enum import Enum
 
@@ -8,6 +9,7 @@ class RecommendationMode(Enum):
     IN_MEMORY = 1
     FUSEKI = 2
     FUSEKI_OPTIMIZED = 3
+    OXIGRAPH = 4
 
 class KGActionMasker:
     def __init__(self,
@@ -40,6 +42,15 @@ class KGActionMasker:
             )
         elif recommendation_mode == RecommendationMode.FUSEKI_OPTIMIZED:
             self.recommender = FusekiOptimized(
+                ontology_file=ontology_file,
+                recommendation_file=recommendation_file,
+                query=query,
+                domain_uri=domain_uri,
+                env_problem_type=env_problem_type,
+                action_size=action_size,
+            )
+        elif recommendation_mode == RecommendationMode.OXIGRAPH:
+            self.recommender = Oxigraph(
                 ontology_file=ontology_file,
                 recommendation_file=recommendation_file,
                 query=query,

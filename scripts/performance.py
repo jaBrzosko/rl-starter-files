@@ -227,7 +227,7 @@ if __name__ == "__main__":
     parser.add_argument("--iterations", type=int, default=10,
                         help="number of iterations for timing tests (default: 10)")
 
-    parser.add_argument("--graph-mode", choices=["in-memory", "fuseki", "fuseki-optimized"], default="in-memory",)
+    parser.add_argument("--graph-mode", choices=["in-memory", "fuseki", "fuseki-optimized", "oxigraph"], default="in-memory",)
 
     args = parser.parse_args()
 
@@ -237,6 +237,10 @@ if __name__ == "__main__":
         mode = RecommendationMode.FUSEKI
     elif args.graph_mode == "fuseki-optimized":
         mode = RecommendationMode.FUSEKI_OPTIMIZED
+    elif args.graph_mode == "oxigraph":
+        mode = RecommendationMode.OXIGRAPH
+    else:
+        raise ValueError(f"Unknown graph mode: {args.graph_mode}")
 
     if args.mode == "detailed":
         run_performance_test(args.iterations, mode)

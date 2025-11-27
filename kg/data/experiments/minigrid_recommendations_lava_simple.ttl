@@ -1,0 +1,128 @@
+@prefix mg: <http://example.org/minigrid#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Actions
+
+mg:action_left a mg:Action ;
+    mg:actionName "left" ;
+    mg:actionIndex "0"^^xsd:int .
+
+mg:action_right a mg:Action ;
+    mg:actionName "right" ;
+    mg:actionIndex "1"^^xsd:int .
+
+mg:action_forward a mg:Action ;
+    mg:actionName "forward" ;
+    mg:actionIndex "2"^^xsd:int .
+
+mg:action_pickup a mg:Action ;
+    mg:actionName "pickup" ;
+    mg:actionIndex "3"^^xsd:int .
+
+mg:action_drop a mg:Action ;
+    mg:actionName "drop" ;
+    mg:actionIndex "4"^^xsd:int .
+
+mg:action_toggle a mg:Action ;
+    mg:actionName "toggle" ;
+    mg:actionIndex "5"^^xsd:int .
+
+mg:action_done a mg:Action ;
+    mg:actionName "done" ;
+    mg:actionIndex "6"^^xsd:int .
+
+# Cell Types and channel values
+
+mg:cellType_empty a mg:CellType ;
+    mg:cellTypeName "empty" ;
+    mg:channelValue "1,0,0" .
+
+mg:cellType_wall a mg:CellType ;
+    mg:cellTypeName "wall" ;
+    mg:channelValue "2,5,0" .
+
+mg:cellType_lava a mg:CellType ;
+    mg:cellTypeName "lava" ;
+    mg:channelValue "9,0,0" .
+
+mg:cellType_unseen a mg:CellType ;
+    mg:cellTypeName "unseen" ;
+    mg:channelValue "0,0,0" .
+
+# Problem Types
+
+mg:problemType_crossing a mg:ProblemType ;
+    mg:problemTypeName "crossing" ;
+    mg:problemTypeDescription "A minigrid environment where the agent must navigate through a crossing of lava" ;
+    mg:problemTypeDocumentationLink "https://minigrid.farama.org/environments/minigrid/CrossingEnv/" .
+
+# Masks
+
+mg:mask_no_forward a mg:Mask ;
+    mg:maskDescription "Masks the forward action completely." ;
+    mg:maskWeight "1.0"^^xsd:decimal ;
+    mg:masksAction mg:action_forward .
+
+mg:mask_no_pickup a mg:Mask ;
+    mg:maskDescription "Masks the pickup action completely." ;
+    mg:maskWeight "1.0"^^xsd:decimal ;
+    mg:masksAction mg:action_pickup .
+
+mg:mask_no_drop a mg:Mask ;
+    mg:maskDescription "Masks the drop action completely." ;
+    mg:maskWeight "1.0"^^xsd:decimal ;
+    mg:masksAction mg:action_drop .
+
+mg:mask_no_toggle a mg:Mask ;
+    mg:maskDescription "Masks the toggle action completely." ;
+    mg:maskWeight "1.0"^^xsd:decimal ;
+    mg:masksAction mg:action_toggle .
+
+mg:mask_no_done a mg:Mask ;
+    mg:maskDescription "Masks the done action completely." ;
+    mg:maskWeight "1.0"^^xsd:decimal ;
+    mg:masksAction mg:action_done .
+
+# =======================================
+# Recommendations
+# =======================================
+
+# Lava Avoidance Recommendation
+
+mg:recommendation_avoid_lava a mg:Recommendation ;
+    mg:recommendationId "rec_avoid_lava" ;
+    mg:recommendationName "Avoid Lava" ;
+    mg:recommendationDescription "This recommendation advises the agent to avoid stepping into lava cells directly in front of them." ;
+    mg:hasProblemType mg:problemType_crossing ;
+    mg:hasMask mg:mask_no_forward ;
+    mg:hasRequirement mg:requirement_lava_ahead .
+
+mg:requirement_lava_ahead a mg:Requirement ;
+    mg:positionX "3"^^xsd:int ;
+    mg:positionY "5"^^xsd:int ;
+    mg:requiresCellType mg:cellType_lava .
+
+# Wall Ahead Recommendation
+
+mg:recommendation_avoid_wall a mg:Recommendation ;
+    mg:recommendationId "rec_avoid_wall" ;
+    mg:recommendationName "Avoid Wall" ;
+    mg:recommendationDescription "This recommendation advises the agent to avoid moving forward when there is a wall directly in front of them." ;
+    mg:hasProblemType mg:problemType_crossing ;
+    mg:hasMask mg:mask_no_forward ;
+    mg:hasRequirement mg:requirement_wall_ahead .
+
+mg:requirement_wall_ahead a mg:Requirement ;
+    mg:positionX "3"^^xsd:int ;
+    mg:positionY "5"^^xsd:int ;
+    mg:requiresCellType mg:cellType_wall .
+
+# Unused Actions Masking Recommendation
+
+mg:recommendation_mask_unused_crossing a mg:Recommendation ;
+    mg:recommendationId "rec_mask_unused_crossing" ;
+    mg:recommendationName "Mask Unused Actions for Crossing" ;
+    mg:recommendationDescription "This recommendation suggests masking actions that are not useful in crossing environments." ;
+    mg:hasProblemType mg:problemType_crossing ;
+    mg:hasMask mg:mask_no_pickup, mg:mask_no_drop, mg:mask_no_toggle, mg:mask_no_done .

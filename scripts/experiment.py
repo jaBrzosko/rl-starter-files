@@ -75,7 +75,7 @@ def evaluate_experiment(args, seed, model_dir):
             domain_uri="http://example.org/minigrid#",
             env_problem_type=args.kg_problem_type,
             action_size=envs[0].action_space.n,
-            recommendation_mode=RecommendationMode.FUSEKI_OPTIMIZED,
+            recommendation_mode=RecommendationMode.OXIGRAPH,
         )
 
         mask_actions = masker.get_action_mask
@@ -147,7 +147,7 @@ def evaluate_experiment(args, seed, model_dir):
 
         # Save status
 
-        if args.save_interval > 0 and update % args.save_interval == 0:
+        if (args.save_interval > 0 and update % args.save_interval == 0) or num_frames >= args.frames:
             status = {"num_frames": num_frames, "update": update,
                       "model_state": acmodel.state_dict(), "optimizer_state": algo.optimizer.state_dict()}
             if hasattr(preprocess_obss, "vocab"):
@@ -180,9 +180,9 @@ def run_experiment_batch(experiments_args, runs):
     for run in range(runs):
         model_dir = utils.get_model_dir_for_experiment(experiments_args.experiment_name, experiments_args.model, run)
         seed = experiments_args.seed + run
-        txt_logger.info(f"Starting run {run} for experiment {experiments_args.experiment_name} in {model_dir} with seed {seed}")
+        txt_logger.info(f"\nStarting run {run} for experiment {experiments_args.experiment_name} in {model_dir} with seed {seed}\n")
         evaluate_experiment(experiments_args, seed, model_dir)
-        txt_logger.info(f"Finished run {run} for experiment {experiments_args.experiment_name}")
+        txt_logger.info(f"\nFinished run {run} for experiment {experiments_args.experiment_name}")
 
 
 parser = argparse.ArgumentParser()
