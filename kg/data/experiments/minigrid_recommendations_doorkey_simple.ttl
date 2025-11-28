@@ -46,12 +46,16 @@ mg:cellType_unseen a mg:CellType ;
     mg:cellTypeName "unseen" ;
     mg:channelValue "0.0,0.0,0.0" .
 
+mg:cellType_door_locked a mg:CellType ;
+    mg:cellTypeName "door_locked" ;
+    mg:channelValue "4.0,4.0,2.0" .
+
 # Problem Types
 
-mg:problemType_empty a mg:ProblemType ;
-    mg:problemTypeName "empty" ;
-    mg:problemTypeDescription "A minigrid environment where the room is empty with no obstacles in the way." ;
-    mg:problemTypeDocumentationLink "https://minigrid.farama.org/environments/minigrid/EmptyEnv/" .
+mg:problemType_door_key a mg:ProblemType ;
+    mg:problemTypeName "door_key" ;
+    mg:problemTypeDescription "A minigrid environment where the agent must find a key to unlock a door and reach the goal." ;
+    mg:problemTypeDocumentationLink "https://minigrid.farama.org/environments/minigrid/DoorKeyEnv/" .
 
 # Masks
 
@@ -90,7 +94,7 @@ mg:recommendation_avoid_wall a mg:Recommendation ;
     mg:recommendationId "rec_avoid_wall" ;
     mg:recommendationName "Avoid Wall" ;
     mg:recommendationDescription "This recommendation advises the agent to avoid moving forward when there is a wall directly in front of them." ;
-    mg:hasProblemType mg:problemType_empty ;
+    mg:hasProblemType mg:problemType_door_key ;
     mg:hasMask mg:mask_no_forward ;
     mg:hasRequirement mg:requirement_wall_ahead .
 
@@ -99,11 +103,26 @@ mg:requirement_wall_ahead a mg:Requirement ;
     mg:positionY "5"^^xsd:int ;
     mg:requiresCellType mg:cellType_wall .
 
+# Locked Door Ahead Recommendation
+
+mg:recommendation_avoid_locked_door a mg:Recommendation ;
+    mg:recommendationId "rec_avoid_locked_door" ;
+    mg:recommendationName "Avoid Locked Door" ;
+    mg:recommendationDescription "This recommendation advises the agent to avoid moving forward when there is a locked door directly in front of them." ;
+    mg:hasProblemType mg:problemType_door_key ;
+    mg:hasMask mg:mask_no_forward ;
+    mg:hasRequirement mg:requirement_locked_door_ahead .
+
+mg:requirement_locked_door_ahead a mg:Requirement ;
+    mg:positionX "3"^^xsd:int ;
+    mg:positionY "5"^^xsd:int ;
+    mg:requiresCellType mg:cellType_door_locked .
+
 # Unused Actions Masking Recommendation
 
-mg:recommendation_mask_unused_empty a mg:Recommendation ;
-    mg:recommendationId "rec_mask_unused_empty" ;
-    mg:recommendationName "Mask Unused Actions for Empty" ;
-    mg:recommendationDescription "This recommendation suggests masking actions that are not useful in empty environments." ;
-    mg:hasProblemType mg:problemType_empty ;
-    mg:hasMask mg:mask_no_pickup, mg:mask_no_drop, mg:mask_no_toggle, mg:mask_no_done .
+mg:recommendation_mask_unused_door_key a mg:Recommendation ;
+    mg:recommendationId "rec_mask_unused_door_key" ;
+    mg:recommendationName "Mask Unused Actions for Door Key" ;
+    mg:recommendationDescription "This recommendation suggests masking actions that are not useful in door key environments." ;
+    mg:hasProblemType mg:problemType_door_key ;
+    mg:hasMask mg:mask_no_drop, mg:mask_no_done .

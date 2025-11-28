@@ -42,10 +42,6 @@ mg:cellType_wall a mg:CellType ;
     mg:cellTypeName "wall" ;
     mg:channelValue "2.0,5.0,0.0" .
 
-mg:cellType_lava a mg:CellType ;
-    mg:cellTypeName "lava" ;
-    mg:channelValue "9.0,0.0,0.0" .
-
 mg:cellType_unseen a mg:CellType ;
     mg:cellTypeName "unseen" ;
     mg:channelValue "0.0,0.0,0.0" .
@@ -57,7 +53,7 @@ mg:cellType_goal a mg:CellType ;
 # Problem Types
 
 mg:problemType_empty a mg:ProblemType ;
-    mg:problemTypeName "empty"
+    mg:problemTypeName "empty" ;
     mg:problemTypeDescription "A minigrid environment where the room is empty with no obstacles in the way." ;
     mg:problemTypeDocumentationLink "https://minigrid.farama.org/environments/minigrid/EmptyEnv/" .
 
@@ -109,10 +105,10 @@ mg:requirement_wall_ahead a mg:Requirement ;
 
 # Unused Actions Masking Recommendation
 
-mg:recommendation_mask_unused_crossing a mg:Recommendation ;
-    mg:recommendationId "rec_mask_unused_crossing" ;
-    mg:recommendationName "Mask Unused Actions for Crossing" ;
-    mg:recommendationDescription "This recommendation suggests masking actions that are not useful in crossing environments." ;
+mg:recommendation_mask_unused_empty a mg:Recommendation ;
+    mg:recommendationId "rec_mask_unused_empty" ;
+    mg:recommendationName "Mask Unused Actions for Empty " ;
+    mg:recommendationDescription "This recommendation suggests masking actions that are not useful in empty environments." ;
     mg:hasProblemType mg:problemType_empty ;
     mg:hasMask mg:mask_no_pickup, mg:mask_no_drop, mg:mask_no_toggle, mg:mask_no_done .
 
@@ -123,10 +119,10 @@ mg:recommendation_wall_left a mg:Recommendation ;
     mg:recommendationName "Wall on the Left" ;
     mg:recommendationDescription "This recommendation advises the agent to not turn left when there is a wall on the left and empty space on the right." ;
     mg:hasProblemType mg:problemType_empty ;
-    mg:hasMask mg:mask_crossing_maybe_no_left ;
+    mg:hasMask mg:mask_empty_maybe_no_left ;
     mg:hasRequirement mg:requirement_wall_left , mg:requirement_empty_right .
 
-mg:mask_crossing_maybe_no_left a mg:Mask ;
+mg:mask_empty_maybe_no_left a mg:Mask ;
     mg:maskDescription "Partial masking of the left turn action." ;
     mg:maskWeight "0.5"^^xsd:decimal ;
     mg:masksAction mg:action_left .
@@ -146,10 +142,10 @@ mg:recommendation_wall_right a mg:Recommendation ;
     mg:recommendationName "Wall on the Right" ;
     mg:recommendationDescription "This recommendation advises the agent to not turn right when there is a wall on the right and empty space on the left." ;
     mg:hasProblemType mg:problemType_empty ;
-    mg:hasMask mg:mask_crossing_maybe_no_right ;
+    mg:hasMask mg:mask_empty_maybe_no_right ;
     mg:hasRequirement mg:requirement_wall_right , mg:requirement_empty_left .
 
-mg:mask_crossing_maybe_no_right a mg:Mask ;
+mg:mask_empty_maybe_no_right a mg:Mask ;
     mg:maskDescription "Partial masking of the right turn action." ;
     mg:maskWeight "0.5"^^xsd:decimal ;
     mg:masksAction mg:action_right .

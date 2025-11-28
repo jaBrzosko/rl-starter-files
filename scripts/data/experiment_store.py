@@ -87,7 +87,7 @@ def read_experiment(experiment_name):
         args.env = door_key_env_name
         args.frames = 200_000
         args.use_kg = True
-        args.kg_recommendation_file = None # TODO: Set appropriate path
+        args.kg_recommendation_file = "kg/data/experiments/minigrid_recommendations_doorkey_simple.ttl"
         args.kg_problem_type = "door_key"
     elif experiment_name == "door_key_kg_complex":
         args = Args()
