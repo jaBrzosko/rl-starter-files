@@ -101,7 +101,14 @@ def evaluate_experiment(args, seed, model_dir):
     update = status["update"]
     start_time = time.time()
 
+    last_episode_value = None
+
     while num_frames < args.frames:
+        # Setup masker episode info
+        if masker is not None:
+            masker.episode_number = update
+            masker.last_episode_value = last_episode_value
+
         # Update model parameters
         update_start_time = time.time()
         exps, logs1 = algo.collect_experiences()
@@ -110,6 +117,7 @@ def evaluate_experiment(args, seed, model_dir):
         update_end_time = time.time()
 
         num_frames += logs["num_frames"]
+        last_episode_value = logs["value"]
         update += 1
 
         # Print logs
@@ -146,7 +154,6 @@ def evaluate_experiment(args, seed, model_dir):
                 tb_writer.add_scalar(field, value, num_frames)
 
         # Save status
-
         if (args.save_interval > 0 and update % args.save_interval == 0) or num_frames >= args.frames:
             status = {"num_frames": num_frames, "update": update,
                       "model_state": acmodel.state_dict(), "optimizer_state": algo.optimizer.state_dict()}
@@ -154,6 +161,9 @@ def evaluate_experiment(args, seed, model_dir):
                 status["vocab"] = preprocess_obss.vocab.vocab
             utils.save_status(status, model_dir)
             txt_logger.info("Status saved")
+
+    # Close loggers
+    csv_file.close()
 
 def run_experiment_batch(experiments_args, runs):
     experiment_dir = utils.get_experiment_dir(experiments_args.experiment_name)
@@ -201,4 +211,9 @@ if __name__ == "__main__":
         experiments_args.append(exp_args)
 
     for single_exp_args in experiments_args:
-        run_experiment_batch(single_exp_args, args_cli.runs)
+        try:
+            run_experiment_batch(single_exp_args, args_cli.runs)
+        except Exception as e:
+            experiment_dir = utils.get_experiment_dir(single_exp_args.experiment_name)
+            txt_logger = utils.get_txt_logger(experiment_dir)
+            txt_logger.error(f"Error while running experiment {single_exp_args.experiment_name}: {e}")

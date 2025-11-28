@@ -19,20 +19,31 @@ GOAL = [8, 1, 0]
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-def create_masker(mode):
+def create_masker(mode, env):
     if mode == RecommendationMode.FUSEKI or mode == RecommendationMode.FUSEKI_OPTIMIZED:
         with open("kg/data/recommendations_fuseki_query.rq", "r") as f:
             query = f.read()
     else:
-        with open("kg/data/recommendation_query.rq", "r") as f:
-            query = f.read()
+        if env == "door-key":
+            with open("kg/data/recommendation_query_with_neg.rq", "r") as f:
+                query = f.read()
+        else:
+            with open("kg/data/recommendation_query.rq", "r") as f:
+                query = f.read()
+
+    if env == "door-key":
+        recommendation_file = "kg/data/experiments/minigrid_recommendations_doorkey_complex.ttl"
+        problem_type = "door_key"
+    else:
+        recommendation_file = "kg/data/minigrid_recommendations.ttl"
+        problem_type = "crossing"
 
     masker = KGActionMasker(
         ontology_file="kg/data/minigrid_ontology.ttl",
-        recommendation_file="kg/data/minigrid_recommendations.ttl",
+        recommendation_file=recommendation_file,
         query=query,
         domain_uri="http://example.org/minigrid#",
-        env_problem_type="crossing",
+        env_problem_type=problem_type,
         action_size=7,
         recommendation_mode=mode,
     )
@@ -79,7 +90,7 @@ def timing_decorator(func):
         return result, elapsed
     return wrapper
 
-def run_performance_test(iterations, mode):
+def run_performance_test(iterations, mode, env):
     """
     Comprehensive performance evaluation with:
     - Average total time over multiple iterations
@@ -95,7 +106,7 @@ def run_performance_test(iterations, mode):
     print("-" * 70)
     
     setup_start = time.perf_counter()
-    masker = create_masker(mode)
+    masker = create_masker(mode, env)
     test_env_state = create_sample_env_state()
     setup_end = time.perf_counter()
     print(f"  Setup time: {setup_end - setup_start:.6f} seconds")
@@ -193,8 +204,8 @@ def run_performance_test(iterations, mode):
     print(f"  Memory per 10 calls: {total_memory / (1024*10):.2f} KB")
     print("=" * 70)
 
-def single_run(mode):
-    masker = create_masker(mode)
+def single_run(mode, env):
+    masker = create_masker(mode, env)
     test_env_state = create_sample_env_state()
 
     start = time.perf_counter()
@@ -205,8 +216,8 @@ def single_run(mode):
     print(f"Output shape: {action_mask.shape if hasattr(action_mask, 'shape') else 'N/A'}")
     print(f"Output value: {action_mask}") 
 
-def run_timing_test(iterations, mode):
-    masker = create_masker(mode)
+def run_timing_test(iterations, mode, env):
+    masker = create_masker(mode, env)
     test_env_state = create_sample_env_state()
 
     def timed_execution():
@@ -229,6 +240,9 @@ if __name__ == "__main__":
 
     parser.add_argument("--graph-mode", choices=["in-memory", "fuseki", "fuseki-optimized", "oxigraph"], default="in-memory",)
 
+    parser.add_argument("--env", choices=["crossing", "door-key"] , default="crossing",
+                        help="environment problem type (default: crossing)")
+
     args = parser.parse_args()
 
     if args.graph_mode == "in-memory":
@@ -243,8 +257,8 @@ if __name__ == "__main__":
         raise ValueError(f"Unknown graph mode: {args.graph_mode}")
 
     if args.mode == "detailed":
-        run_performance_test(args.iterations, mode)
+        run_performance_test(args.iterations, mode, args.env)
     elif args.mode == "single-run":
-        single_run(mode)
+        single_run(mode, args.env)
     elif args.mode == "timing":
-        run_timing_test(args.iterations, mode)
+        run_timing_test(args.iterations, mode, args.env)

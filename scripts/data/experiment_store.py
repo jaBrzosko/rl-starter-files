@@ -30,6 +30,11 @@ class Args:
     optim_alpha = 0.99  # RMSprop optimizer alpha
     clip_eps = 0.2  # clipping epsilon for PPO
 
+    # Masking parameters
+    episode_cutoff = None  # number of episodes after which to stop masking
+    value_cutoff = None  # value cutoff after which to stop masking
+    masking_probability = 1.0  # probability of applying masking
+
 def read_experiment(experiment_name):
     
     empty_env_name = "MiniGrid-Empty-8x8-v0"
@@ -92,10 +97,59 @@ def read_experiment(experiment_name):
     elif experiment_name == "door_key_kg_complex":
         args = Args()
         args.env = door_key_env_name
-        args.frames = 200_000
+        args.frames = 100_000
         args.use_kg = True
         args.kg_recommendation_file = "kg/data/experiments/minigrid_recommendations_doorkey_complex.ttl"
         args.kg_problem_type = "door_key"
+        args.kg_query_file = "kg/data/recommendation_query_with_neg.rq"
+    elif experiment_name == "lava_gap_kg_base_episode_cutoff":
+        args = Args()
+        args.env = lava_gap_env_name
+        args.frames = 150_000
+        args.use_kg = True
+        args.kg_recommendation_file = "kg/data/experiments/minigrid_recommendations_lava_simple.ttl"
+        args.kg_problem_type = "crossing"
+        args.episode_cutoff = 20
+    elif experiment_name == "lava_gap_kg_base_value_cutoff":
+        args = Args()
+        args.env = lava_gap_env_name
+        args.frames = 300_000
+        args.use_kg = True
+        args.kg_recommendation_file = "kg/data/experiments/minigrid_recommendations_lava_simple.ttl"
+        args.kg_problem_type = "crossing"
+        args.value_cutoff = 0.4
+    elif experiment_name == "lava_gap_kg_base_prob_095":
+        args = Args()
+        args.env = lava_gap_env_name
+        args.frames = 200_000
+        args.use_kg = True
+        args.kg_recommendation_file = "kg/data/experiments/minigrid_recommendations_lava_simple.ttl"
+        args.kg_problem_type = "crossing"
+        args.masking_probability = 0.95
+    elif experiment_name == "lava_gap_kg_base_prob_098":
+        args = Args()
+        args.env = lava_gap_env_name
+        args.frames = 200_000
+        args.use_kg = True
+        args.kg_recommendation_file = "kg/data/experiments/minigrid_recommendations_lava_simple.ttl"
+        args.kg_problem_type = "crossing"
+        args.masking_probability = 0.98
+    elif experiment_name == "lava_gap_kg_base_prob_099":
+        args = Args()
+        args.env = lava_gap_env_name
+        args.frames = 200_000
+        args.use_kg = True
+        args.kg_recommendation_file = "kg/data/experiments/minigrid_recommendations_lava_simple.ttl"
+        args.kg_problem_type = "crossing"
+        args.masking_probability = 0.99
+    elif experiment_name == "lava_gap_kg_base_prob_0995":
+        args = Args()
+        args.env = lava_gap_env_name
+        args.frames = 200_000
+        args.use_kg = True
+        args.kg_recommendation_file = "kg/data/experiments/minigrid_recommendations_lava_simple.ttl"
+        args.kg_problem_type = "crossing"
+        args.masking_probability = 0.995
     else:
         raise ValueError(f"Unknown experiment name: {experiment_name}")
 

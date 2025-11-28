@@ -70,6 +70,12 @@
     rdfs:range :CellType ;
     rdfs:comment "Links a requirement to the cell type it pertains to." .
 
+:forbidsCellType a owl:ObjectProperty ;
+    rdfs:label "forbids cell type" ;
+    rdfs:domain :Requirement ;
+    rdfs:range :CellType ;
+    rdfs:comment "Links a requirement to a cell type that is forbidden in the specified position." .
+
 :hasCell a owl:ObjectProperty ;
     rdfs:label "has cell" ;
     rdfs:domain :Map ;
