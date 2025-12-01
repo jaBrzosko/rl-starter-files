@@ -110,6 +110,22 @@ def read_experiment(experiment_name):
         args.kg_recommendation_file = "kg/data/experiments/minigrid_recommendations_lava_simple.ttl"
         args.kg_problem_type = "crossing"
         args.episode_cutoff = 20
+    elif experiment_name == "lava_gap_kg_base_episode_cutoff_ec40":
+        args = Args()
+        args.env = lava_gap_env_name
+        args.frames = 150_000
+        args.use_kg = True
+        args.kg_recommendation_file = "kg/data/experiments/minigrid_recommendations_lava_simple.ttl"
+        args.kg_problem_type = "crossing"
+        args.episode_cutoff = 40
+    elif experiment_name == "lava_gap_kg_base_episode_cutoff_ec60":
+        args = Args()
+        args.env = lava_gap_env_name
+        args.frames = 150_000
+        args.use_kg = True
+        args.kg_recommendation_file = "kg/data/experiments/minigrid_recommendations_lava_simple.ttl"
+        args.kg_problem_type = "crossing"
+        args.episode_cutoff = 60
     elif experiment_name == "lava_gap_kg_base_value_cutoff":
         args = Args()
         args.env = lava_gap_env_name
@@ -118,6 +134,14 @@ def read_experiment(experiment_name):
         args.kg_recommendation_file = "kg/data/experiments/minigrid_recommendations_lava_simple.ttl"
         args.kg_problem_type = "crossing"
         args.value_cutoff = 0.4
+    # elif experiment_name == "lava_gap_kg_base_value_cutoff_debug":
+    #     args = Args()
+    #     args.env = lava_gap_env_name
+    #     args.frames = 300_000
+    #     args.use_kg = True
+    #     args.kg_recommendation_file = "kg/data/experiments/minigrid_recommendations_lava_simple.ttl"
+    #     args.kg_problem_type = "crossing"
+    #     args.value_cutoff = 0.4
     elif experiment_name == "lava_gap_kg_base_prob_095":
         args = Args()
         args.env = lava_gap_env_name

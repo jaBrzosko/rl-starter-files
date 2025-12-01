@@ -77,6 +77,11 @@ class KGActionMasker:
         self.last_episode_value = None
         self.best_episode_value = None
 
+        print(f"KGActionMasker initialized with {recommendation_mode} recommender.")
+        print(f"Masking options: probability={masking_options.probability}, "
+                f"episode_cutoff={masking_options.episode_cutoff}, "
+                f"value_cutoff={masking_options.value_cutoff}")
+
     def get_action_mask(self, observation, device):
         n = len(observation.image)
 

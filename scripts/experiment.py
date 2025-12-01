@@ -8,7 +8,7 @@ import sys
 import utils
 import os
 import json
-from kg.masker import KGActionMasker, RecommendationMode
+from kg.masker import KGActionMasker, RecommendationMode, MaskingOptions
 from scripts.data.experiment_store import read_experiment
 from utils import device
 from model import ACModel
@@ -68,6 +68,8 @@ def evaluate_experiment(args, seed, model_dir):
         with open(args.kg_query_file, "r") as f:
             query = f.read()
 
+        maskingOptions = MaskingOptions(args.masking_probability, args.episode_cutoff, args.value_cutoff)
+
         masker = KGActionMasker(
             ontology_file=ONTOLOGY_FILE,
             recommendation_file=args.kg_recommendation_file,
@@ -76,6 +78,7 @@ def evaluate_experiment(args, seed, model_dir):
             env_problem_type=args.kg_problem_type,
             action_size=envs[0].action_space.n,
             recommendation_mode=RecommendationMode.OXIGRAPH,
+            masking_options=maskingOptions,
         )
 
         mask_actions = masker.get_action_mask
@@ -106,8 +109,8 @@ def evaluate_experiment(args, seed, model_dir):
     while num_frames < args.frames:
         # Setup masker episode info
         if masker is not None:
-            masker.episode_number = update
-            masker.last_episode_value = last_episode_value
+            masker.set_episode(update)
+            masker.set_episode_value(last_episode_value)
 
         # Update model parameters
         update_start_time = time.time()
