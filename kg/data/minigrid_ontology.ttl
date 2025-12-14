@@ -18,7 +18,7 @@
 
 :Recommendation a owl:Class ;
     rdfs:label "Recommendation" ;
-    rdfs:comment "Represents a general behavioral recommendation in a minigrid environment.." .
+    rdfs:comment "Represents a general behavioral recommendation in a minigrid environment." .
 
 :Mask a owl:Class ;
     rdfs:label "Mask" ;
