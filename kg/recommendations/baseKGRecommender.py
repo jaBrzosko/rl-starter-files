@@ -2,10 +2,6 @@ import uuid
 import rdflib
 from abc import ABC, abstractmethod
 
-############################################
-# ----------- ABSTRACT BASE ---------------
-############################################
-
 class BaseKGRecommender(ABC):
     def __init__(self, ontology_file, recommendation_file, query, domain_uri, env_problem_type, action_size=7):
         self.ontology_file = ontology_file
@@ -31,9 +27,6 @@ class BaseKGRecommender(ABC):
         kg, map_id = self._build_map_graph(map_array)
         return self._execute_query(kg, map_id)
 
-    ########################################
-    #       SHARED DATA BUILDING
-    ########################################
     def _build_map_graph(self, map_array):
         kg = rdflib.Graph()
         map_id = f"Map_{uuid.uuid4()}"
@@ -55,9 +48,6 @@ class BaseKGRecommender(ABC):
 
         return kg, map_id
 
-    ########################################
-    #   ABSTRACT QUERY IMPLEMENTATION
-    ########################################
     @abstractmethod
     def _execute_query(self, map_kg, map_id):
         pass

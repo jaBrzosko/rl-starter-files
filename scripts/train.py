@@ -151,8 +151,6 @@ if __name__ == "__main__":
         algo = torch_ac.PPOAlgo(envs, acmodel, device, args.frames_per_proc, args.discount, args.lr, args.gae_lambda,
                                 args.entropy_coef, args.value_loss_coef, args.max_grad_norm, args.recurrence,
                                 args.optim_eps, args.clip_eps, args.epochs, args.batch_size,
-                                # preprocess_obss=utils.kg.test_preobs,
-                                # reshape_reward=utils.kg.test_reshape)
                                 preprocess_obss=preprocess_obss,
                                 mask_actions=masker.get_action_mask)
     else:

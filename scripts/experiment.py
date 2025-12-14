@@ -17,28 +17,21 @@ import minigrid
 ONTOLOGY_FILE = "kg/data/minigrid_ontology.ttl"
 
 def evaluate_experiment(args, seed, model_dir):
-    # Load loggers and Tensorboard writer
     txt_logger = utils.get_txt_logger(model_dir)
     csv_file, csv_logger = utils.get_csv_logger(model_dir)
     tb_writer = tensorboardX.SummaryWriter(model_dir)
 
-    # Log command and all script arguments
     txt_logger.info("{}\n".format(" ".join(sys.argv)))
     txt_logger.info("{}\n".format(args))
 
-    # Set seed for all randomness sources
     utils.seed(seed)
 
-    # Set device
     txt_logger.info(f"Device: {device}\n")
 
-    # Load environments
     envs = []
     for i in range(args.procs):
         envs.append(utils.make_env(args.env, seed + 10000 * i))
     txt_logger.info("Environments loaded\n")
-
-    # Load training status
 
     try:
         status = utils.get_status(model_dir)
@@ -46,14 +39,11 @@ def evaluate_experiment(args, seed, model_dir):
         status = {"num_frames": 0, "update": 0}
     txt_logger.info("Training status loaded\n")
 
-    # Load observations preprocessor
-
     obs_space, preprocess_obss = utils.get_obss_preprocessor(envs[0].observation_space)
     if "vocab" in status:
         preprocess_obss.vocab.load_vocab(status["vocab"])
     txt_logger.info("Observations preprocessor loaded")
 
-    # Load model
     acmodel = ACModel(obs_space, envs[0].action_space, use_memory=False, use_text=False)
 
     if "model_state" in status:
@@ -85,9 +75,7 @@ def evaluate_experiment(args, seed, model_dir):
     else:
         mask_actions = None
 
-    # Load algo
     recurrence = 1
-
     algo = torch_ac.PPOAlgo(envs, acmodel, device, args.frames_per_proc, args.discount, args.lr, args.gae_lambda,
                             args.entropy_coef, args.value_loss_coef, args.max_grad_norm, recurrence,
                             args.optim_eps, args.clip_eps, args.epochs, args.batch_size,
@@ -97,8 +85,6 @@ def evaluate_experiment(args, seed, model_dir):
     if "optimizer_state" in status:
         algo.optimizer.load_state_dict(status["optimizer_state"])
     txt_logger.info("Optimizer loaded\n")
-
-    # Train model
 
     num_frames = status["num_frames"]
     update = status["update"]
@@ -122,8 +108,6 @@ def evaluate_experiment(args, seed, model_dir):
         num_frames += logs["num_frames"]
         last_episode_value = logs["value"]
         update += 1
-
-        # Print logs
 
         if update % args.log_interval == 0:
             fps = logs["num_frames"] / (update_end_time - update_start_time)
@@ -156,7 +140,6 @@ def evaluate_experiment(args, seed, model_dir):
             for field, value in zip(header, data):
                 tb_writer.add_scalar(field, value, num_frames)
 
-        # Save status
         if (args.save_interval > 0 and update % args.save_interval == 0) or num_frames >= args.frames:
             status = {"num_frames": num_frames, "update": update,
                       "model_state": acmodel.state_dict(), "optimizer_state": algo.optimizer.state_dict()}
@@ -165,7 +148,6 @@ def evaluate_experiment(args, seed, model_dir):
             utils.save_status(status, model_dir)
             txt_logger.info("Status saved")
 
-    # Close loggers
     csv_file.close()
 
 def run_experiment_batch(experiments_args, runs):

@@ -3,9 +3,6 @@ from kg.recommendations.baseKGRecommender import BaseKGRecommender
 import uuid
 import rdflib
 
-############################################
-# -----------  MOCKED CONFIG  -------------
-############################################
 FUSEKI_CONFIG = {
     "UPDATE_URL": "http://localhost:3030/python/update",
     "QUERY_URL": "http://localhost:3030/python/query",
@@ -20,14 +17,10 @@ class FusekiKGOptimizedRecommender(BaseKGRecommender):
         self.query_endpoint = SPARQLWrapper(FUSEKI_CONFIG["QUERY_URL"])
         self.base_graph_uri = FUSEKI_CONFIG["GRAPH_URI"]
 
-        # Unique graph resolves unnecessary conflicts when previous data was not cleared
         self.recommendations_graph_uri = f"{self.base_graph_uri}/recommendations/{uuid.uuid4()}"
 
         self._upload_initial_kg()
 
-    ########################################
-    # Upload ontology + recommendations
-    ########################################
     def _upload_initial_kg(self):
         triples = (self.ontology + self.recommendations).serialize(format='nt')
         self._send_update(f"""
@@ -38,9 +31,6 @@ class FusekiKGOptimizedRecommender(BaseKGRecommender):
         }}
         """)
 
-    ########################################
-    # Override base method
-    ########################################
     def get_action_mask(self, map_array):
         action_mask = [1.0] * self.action_size
 
@@ -48,15 +38,11 @@ class FusekiKGOptimizedRecommender(BaseKGRecommender):
         map_obj = f"{self.domain}{map_id}"
         tmp_graph = f"{self.base_graph_uri}/temp/{uuid.uuid4()}"
 
-        # Build N-Triples directly as a string
-        triples = []
-        
-        # Map triples
+        triples = []        
         triples.append(f"<{map_obj}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <{self.domain}Map> .")
         triples.append(f"<{map_obj}> <{self.domain}mapId> \"{map_id}\" .")
         triples.append(f"<{map_obj}> <{self.domain}hasProblemType> <{self.problem_type}> .")
 
-        # Cell triples
         for x, row in enumerate(map_array):
             for y, cell in enumerate(row):
                 cell_obj = f"{self.domain}Cell_{x}_{y}_{uuid.uuid4()}"
@@ -68,7 +54,6 @@ class FusekiKGOptimizedRecommender(BaseKGRecommender):
 
         triples_str = "\n".join(triples)
 
-        # Insert data
         self._send_update(f"""
         INSERT DATA {{
             GRAPH <{tmp_graph}> {{
@@ -77,7 +62,6 @@ class FusekiKGOptimizedRecommender(BaseKGRecommender):
         }}
         """)
 
-        # Query
         sparql_query = self.query.replace("MAP_ID_REPLACE", map_id) \
             .replace("RECOMMENDATIONS_GRAPH_REPLACE", self.recommendations_graph_uri) \
             .replace("MAP_GRAPH_REPLACE", tmp_graph)
@@ -95,17 +79,11 @@ class FusekiKGOptimizedRecommender(BaseKGRecommender):
         self._send_update(f"DROP GRAPH <{tmp_graph}>")
         return action_mask
 
-    ########################################
-    # Helper
-    ########################################
     def _send_update(self, sparql):
         self.update_endpoint.setMethod("POST")
         self.update_endpoint.setQuery(sparql)
         self.update_endpoint.query()
 
-    ########################################
-    #   ABSTRACT QUERY IMPLEMENTATION
-    ########################################
     def _execute_query(self, map_kg, map_id):
-        # Not used in optimized version
+        # Fuseki has custom override
         pass

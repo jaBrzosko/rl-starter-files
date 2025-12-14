@@ -2,9 +2,6 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 from kg.recommendations.baseKGRecommender import BaseKGRecommender
 import uuid
 
-############################################
-# -----------  MOCKED CONFIG  -------------
-############################################
 FUSEKI_CONFIG = {
     "UPDATE_URL": "http://localhost:3030/python/update",
     "QUERY_URL": "http://localhost:3030/python/query",
@@ -19,14 +16,10 @@ class FusekiKGRecommender(BaseKGRecommender):
         self.query_endpoint = SPARQLWrapper(FUSEKI_CONFIG["QUERY_URL"])
         self.base_graph_uri = FUSEKI_CONFIG["GRAPH_URI"]
 
-        # Unique graph resolves unnecessary conflicts when previous data was not cleared
         self.recommendations_graph_uri = f"{self.base_graph_uri}/recommendations/{uuid.uuid4()}"
 
         self._upload_initial_kg()
 
-    ########################################
-    # Upload ontology + recommendations
-    ########################################
     def _upload_initial_kg(self):
         triples = (self.ontology + self.recommendations).serialize(format='nt')
         self._send_update(f"""
@@ -37,9 +30,6 @@ class FusekiKGRecommender(BaseKGRecommender):
         }}
         """)
 
-    ########################################
-    # Send temporary map graph then query
-    ########################################
     def _execute_query(self, map_kg, map_id):
         action_mask = [1.0] * self.action_size
 
@@ -70,9 +60,6 @@ class FusekiKGRecommender(BaseKGRecommender):
         self._send_update(f"DROP GRAPH <{tmp_graph}>")
         return action_mask
 
-    ########################################
-    # Helper
-    ########################################
     def _send_update(self, sparql):
         self.update_endpoint.setMethod("POST")
         self.update_endpoint.setQuery(sparql)

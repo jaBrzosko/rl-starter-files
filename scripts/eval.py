@@ -10,25 +10,20 @@ import minigrid
 
 
 def evaluate_single_model(env_name, model_dir, episodes=100, seed=0, procs=16):
-    """Evaluate a single model and return logs."""
     utils.seed(seed)
     
-    # Load environments
     envs = []
     for i in range(procs):
         env = utils.make_env(env_name, seed + 10000 * i, debug=False)
         envs.append(env)
     env = ParallelEnv(envs)
     
-    # Load agent
     agent = utils.Agent(env.observation_space, env.action_space, model_dir,
                        argmax=False, num_envs=procs,
                        use_memory=False, use_text=False)
     
-    # Initialize logs
     logs = {"num_frames_per_episode": [], "return_per_episode": []}
     
-    # Run agent
     start_time = time.time()
     
     obss = env.reset()
@@ -58,7 +53,6 @@ def evaluate_single_model(env_name, model_dir, episodes=100, seed=0, procs=16):
     
     end_time = time.time()
     
-    # Calculate metrics
     num_frames = sum(logs["num_frames_per_episode"])
     fps = num_frames / (end_time - start_time)
     duration = int(end_time - start_time)
@@ -67,11 +61,8 @@ def evaluate_single_model(env_name, model_dir, episodes=100, seed=0, procs=16):
 
 
 def evaluate_experiment(experiment_name, env_name, runs, episodes=100, base_seed=0, procs=16):
-    """Evaluate all runs of a single experiment."""
-    
     experiment_dir = utils.get_experiment_dir(experiment_name)
     
-    # Load experiment args to get model name
     arg_file = os.path.join(experiment_dir, "args.json")
     if not os.path.exists(arg_file):
         print(f"Warning: {arg_file} does not exist. Skipping experiment {experiment_name}")
@@ -121,7 +112,6 @@ def evaluate_experiment(experiment_name, env_name, runs, episodes=100, base_seed
         
         run_results.append(run_result)
         
-        # Collect for cross-run statistics
         all_returns.extend(logs["return_per_episode"])
         all_frames.extend(logs["num_frames_per_episode"])
         
@@ -132,7 +122,6 @@ def evaluate_experiment(experiment_name, env_name, runs, episodes=100, base_seed
         print(f"No valid runs found for experiment {experiment_name}")
         return None
     
-    # Calculate aggregate statistics across all runs
     aggregate_stats = {
         "experiment_name": experiment_name,
         "num_runs": len(run_results),
@@ -145,8 +134,6 @@ def evaluate_experiment(experiment_name, env_name, runs, episodes=100, base_seed
 
 
 def run_batch_evaluation(experiment_names, env_name, runs=5, episodes=100, base_seed=0, procs=16):
-    """Evaluate multiple experiments and compare results."""
-    
     print(f"Device: {device}\n")
     print(f"Starting batch evaluation of {len(experiment_names)} experiments")
     print(f"Environment: {env_name}")
@@ -161,7 +148,6 @@ def run_batch_evaluation(experiment_names, env_name, runs=5, episodes=100, base_
         if result:
             all_results.append(result)
     
-    # Print summary comparison
     print(f"\n{'='*80}")
     print("SUMMARY: Experiment Comparison")
     print(f"{'='*80}\n")
@@ -180,7 +166,6 @@ def run_batch_evaluation(experiment_names, env_name, runs=5, episodes=100, base_
         print(f"{exp_name:<30} {num_runs:<6} {ret_mean:>6.2f}±{ret_std:<5.2f}      "
               f"[{ret_min:>6.2f}, {ret_max:>6.2f}]")
     
-    # Save results to JSON
     output_file = "batch_evaluation_results.json"
     with open(output_file, "w") as f:
         json.dump(all_results, f, indent=2)
@@ -191,11 +176,11 @@ def run_batch_evaluation(experiment_names, env_name, runs=5, episodes=100, base_
 
 if __name__ == "__main__":
     EXPERIMENT_NAMES = [
-        # "lava_gap_base",
-        # "lava_gap_kg_base",
-        # "lava_gap_kg_complex",
-        # "lava_gap_kg_base_episode_cutoff_ec40",
-        # "lava_gap_kg_base_value_cutoff",
+        "lava_gap_base",
+        "lava_gap_kg_base",
+        "lava_gap_kg_complex",
+        "lava_gap_kg_base_episode_cutoff_ec40",
+        "lava_gap_kg_base_value_cutoff",
          "lava_gap_kg_base_prob_095",
          "lava_gap_kg_base_prob_098",
          "lava_gap_kg_base_prob_099"
@@ -206,11 +191,11 @@ if __name__ == "__main__":
     EPISODES_PER_RUN = 500
     BASE_SEED = 0
     NUM_PROCS = 16
-    USE_ARGMAX = True  # Use argmax action selection for evaluation
-    USE_MEMORY = False  # Set to True if models use LSTM
-    USE_TEXT = False    # Set to True if models use GRU for text
     
-    # Run batch evaluation
+    USE_ARGMAX = True
+    USE_MEMORY = False
+    USE_TEXT = False
+    
     results = run_batch_evaluation(
         experiment_names=EXPERIMENT_NAMES,
         env_name=ENV_NAME,
